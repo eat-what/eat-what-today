@@ -25,6 +25,12 @@ class AppInit
 	{
 		$this->config = $config;
 
+		if( $this->config["develope"] ) {
+			error_reporting(E_ALL);
+			ini_set('display_errors','On');
+    		ini_set('display_startup_errors','On');
+		}
+
 		ob_start("ob_gzhandler");
 
 		session_start();
