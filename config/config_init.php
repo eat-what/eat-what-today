@@ -1,6 +1,9 @@
 <?php
 
 return [
+
+	"develope" => true,
+
 	"classmap_static" => [
 
 	],
