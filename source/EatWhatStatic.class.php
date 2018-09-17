@@ -35,4 +35,13 @@ class EatWhatStatic
 
         return false;
     }
+
+    /**
+     * check http method is post
+     * 
+     */
+    public static function checkPostMethod()
+    {
+        return getenv("REQUEST_METHOD") == "POST";
+    }
 }

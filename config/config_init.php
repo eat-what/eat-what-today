@@ -2,7 +2,7 @@
 
 return [
 
-	"develope" => true,
+	"developement" => true,
 
 	"classmap_static" => [
 
