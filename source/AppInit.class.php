@@ -7,6 +7,9 @@
 
 namespace EatWhat;
 
+use EatWhat\EatWhatRequest;
+use EatWhat\EatWhatStatic;
+
 class AppInit
 {
 
@@ -16,6 +19,11 @@ class AppInit
 	 */
 	public $config;
 
+    /**
+     * request
+     *
+     */
+    public $request;
 
 	/**
 	 * Initial app
@@ -36,6 +44,9 @@ class AppInit
 		session_start();
 
 		$this->register();
+
+        // create request
+        $this->request = new EatWhatRequest();
 	}
 
 
@@ -56,7 +67,7 @@ class AppInit
 	public function autoLoadRegister($class)
 	{
 		$file = $this->findFile($class);
-		if($file && $this->checkFile($file)) require_once $file;
+		if($file && EatWhatStatic::checkFile($file)) require_once $file;
 	}
 
 	/**
@@ -83,14 +94,4 @@ class AppInit
             }
         }
     }	
-
-    /**
-     * check file exists and can be read
-     *
-     */
-    public function checkFile($file)
-    {
-        return file_exists($file) && is_readable($file);
-    }
-
 }
