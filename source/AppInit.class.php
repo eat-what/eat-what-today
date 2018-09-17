@@ -33,7 +33,7 @@ class AppInit
 	{
 		$this->config = $config;
 
-		if( $this->config["develope"] ) {
+		if( $this->config["developement"] ) {
 			error_reporting(E_ALL);
 			ini_set('display_errors','On');
     		ini_set('display_startup_errors','On');

@@ -17,6 +17,15 @@ class AppConfig
      *
      */
     static $loadedConfig = [];
+    
+    /**
+     * return loaded config 
+     *
+     */
+    public static function getLoadedConfig()
+    {
+        return self::$loadedConfig;
+    }
 
     /**
      * set specific config
@@ -51,14 +60,5 @@ class AppConfig
         }
 
         return null;
-    }
-
-    /**
-     * return loaded config 
-     *
-     */
-    public static function getLoadedConfig()
-    {
-        return self::$loadedConfig;
     }
 }
