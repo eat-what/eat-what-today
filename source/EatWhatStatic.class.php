@@ -7,6 +7,8 @@
 
 namespace EatWhat;
 
+use EatWhat\AppConfig;
+
 class EatWhatStatic
 {
     /**
@@ -43,5 +45,19 @@ class EatWhatStatic
     public static function checkPostMethod()
     {
         return getenv("REQUEST_METHOD") == "POST";
+    }
+
+    /**
+     * get passed params sign
+     * 
+     */
+    public static function getParamsSign()
+    {
+        $data = json_encode($_GET);
+        $pri_key_pem_file = AppConfig::get("pri_key_pem_file", "global");
+        $pri_key = openssl_pkey_get_private($pri_key_pem_file);
+
+        openssl_sign($data, $signature, $pri_key, "sha256");
+        return $signature;
     }
 }

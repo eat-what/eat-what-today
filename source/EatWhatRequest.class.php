@@ -10,6 +10,12 @@ namespace EatWhat;
 class EatWhatRequest
 {
     /**
+     * middlewares 
+     * 
+     */
+    public $middwares = [];
+
+    /**
      * class
      * 
      */
@@ -33,7 +39,9 @@ class EatWhatRequest
      */
     public function __construct()
     {
-
+        $params = $_GET;
+        $this->class = $_GET["cls"];
+        $this->method = $_GET["mtd"];
     }
 
     /**
@@ -42,7 +50,7 @@ class EatWhatRequest
      */
     public function __invoke() 
     {
-
+        
     }
 
     /**
@@ -70,5 +78,26 @@ class EatWhatRequest
     public function setArgs($args)
     {   
         $this->$args = $args;
+    }
+
+    /**
+     * get GP value
+     * 
+     */
+    public function getGPValue($key)
+    {
+        if(isset($_GET[$key])) {
+            return $_GET[$key];
+        }
+        return "";
+    }
+
+    /**
+     * add a request filter
+     * 
+     */
+    public function addMiddleWare(callable $middleware)
+    {
+        $this->middwares[] = $middleware;
     }
 }
