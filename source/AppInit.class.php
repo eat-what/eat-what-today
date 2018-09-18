@@ -10,7 +10,7 @@ namespace EatWhat;
 use EatWhat\EatWhatRequest;
 use EatWhat\EatWhatStatic;
 use EatWhat\MiddlewareGenerator;
-use EatWhat\Exception\EatWhatException;
+use EatWhat\Exceptions\EatWhatException;
 
 class AppInit
 {
