@@ -8,6 +8,12 @@ define("CONFIG_PATH", __DIR__.DS."config".DS);
 
 $initConfig = require_once CONFIG_PATH."config_init.php";
 
+if( $initConfig["developement"] ) {
+    error_reporting(E_ALL);
+    ini_set('display_errors','On');
+    ini_set('display_startup_errors','On');
+}
+
 require_once SOURCE_PATH."AppInit.class.php";
 
 $appInit = new EatWhat\AppInit();

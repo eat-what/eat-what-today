@@ -9,6 +9,8 @@ namespace EatWhat;
 
 use EatWhat\EatWhatRequest;
 use EatWhat\EatWhatStatic;
+use EatWhat\MiddlewareGenerator;
+use EatWhat\Exception\EatWhatException;
 
 class AppInit
 {
@@ -33,20 +35,20 @@ class AppInit
 	{
 		$this->config = $config;
 
-		if( $this->config["developement"] ) {
-			error_reporting(E_ALL);
-			ini_set('display_errors','On');
-    		ini_set('display_startup_errors','On');
-		}
-
 		ob_start("ob_gzhandler");
 
 		session_start();
 
 		$this->register();
 
-        // create request
-        $this->request = new EatWhatRequest();
+		$this->initInput();
+
+		// create request
+		$this->request = new EatWhatRequest();
+		$this->request->addMiddleWare(MiddlewareGenerator::generate("verifySign"));
+
+		// invoke
+		$this->request();
 	}
 
 
@@ -93,5 +95,15 @@ class AppInit
                 return $file;
             }
         }
-    }	
+	}
+	
+	/**
+	 * 处理输入
+	 * 
+	 */
+	public function initInput()
+	{
+		EatWhatStatic::checkPostMethod() && ($_GET = array_merge($_GET, $_POST));
+		$_GET["paramsSign"] = EatWhatStatic::getParamsSign();
+	}
 }
