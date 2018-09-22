@@ -69,7 +69,10 @@ class AppInit
 	public function autoLoadRegister($class)
 	{
 		$file = $this->findFile($class);
-		if($file && EatWhatStatic::checkFile($file)) require_once $file;
+		if($file && EatWhatStatic::checkFile($file)) 
+			require_once $file;
+		else 
+			throw new EatWhatException("class file is not exists.");
 	}
 
 	/**
@@ -98,7 +101,7 @@ class AppInit
 	}
 	
 	/**
-	 * 处理输入
+	 * init input
 	 * 
 	 */
 	public function initInput()

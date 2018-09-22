@@ -12,6 +12,7 @@ if( $initConfig["developement"] ) {
     error_reporting(E_ALL);
     ini_set('display_errors','On');
     ini_set('display_startup_errors','On');
+    ini_set('log_errors','On');
 }
 
 require_once SOURCE_PATH."AppInit.class.php";

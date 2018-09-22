@@ -50,7 +50,7 @@ class EatWhatRequest
      */
     public function __invoke() 
     {
-        
+        array_reduce();
     }
 
     /**
