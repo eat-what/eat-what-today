@@ -13,7 +13,7 @@ class EatWhatRequest
      * middlewares 
      * 
      */
-    public $middwares = [];
+    public $middlewares = [];
 
     /**
      * class
@@ -50,7 +50,22 @@ class EatWhatRequest
      */
     public function __invoke() 
     {
-        array_reduce();
+        $handle = array_reduce(array_reverse($this->middlewares), function($next, $middleware){
+            return function($request) use($next, $middleware) {
+                $middleware($request, $next);
+            };
+        }, [$this, "call"]);
+
+        $handle(new static);
+    }
+
+    /**
+     * call after middleware filter
+     * 
+     */
+    public function call()
+    {
+        echo "welcome to thre!";
     }
 
     /**

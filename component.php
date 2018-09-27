@@ -16,6 +16,7 @@ if( $initConfig["developement"] ) {
 }
 
 require_once SOURCE_PATH."AppInit.class.php";
+require_once SOURCE_PATH."EatWhatStatic.class.php";
 
 $appInit = new EatWhat\AppInit();
 $appInit->_Init($initConfig);
