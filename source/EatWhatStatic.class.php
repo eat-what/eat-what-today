@@ -60,4 +60,16 @@ class EatWhatStatic
         openssl_sign($data, $signature, $pri_key, "sha256");
         return $signature;
     }
+
+    /**
+     * get GP value
+     * 
+     */
+    public static function getGPValue($key)
+    {
+        if(isset($_GET[$key])) {
+            return $_GET[$key];
+        }
+        return "";
+    }
 }

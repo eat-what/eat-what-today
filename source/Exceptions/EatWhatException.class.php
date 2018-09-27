@@ -15,7 +15,7 @@ class EatWhatException extends \Exception
      */
     public function __construct($message = "", $code = 0)
     {
-        $message = $message . " EatWhat " . PHP_EOL;
+        $message = " EATWHAT ERROR: " . PHP_EOL;
         parent::__construct($message, $code);
     }
 }

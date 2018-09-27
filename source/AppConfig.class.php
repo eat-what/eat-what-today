@@ -31,11 +31,9 @@ class AppConfig
      * set specific config
      *
      */
-    public static function set($configType, $configName, $configValue)
+    public static function set($configType, $configValue)
     {
-        if(!isset(self::$loadedConfig[$configType][$configName])) {
-            self::$loadedConfig[$configType][$configName] = $configValue;
-        }  
+        self::$loadedConfig[$configType] = $configValue; 
     }
 
     /**
@@ -53,7 +51,7 @@ class AppConfig
                 $requireConfig = require_once $configFile;
                 if( isset($requireConfig[$configName]) ) {
                     $configValue = $requireConfig[$configName];
-                    self::set($configType, $configName, $configValue);
+                    self::set($configType, $requireConfig);
                     return $configValue;
                 }
             }

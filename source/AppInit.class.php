@@ -9,7 +9,7 @@ namespace EatWhat;
 
 use EatWhat\EatWhatRequest;
 use EatWhat\EatWhatStatic;
-use EatWhat\MiddlewareGenerator;
+use EatWhat\Generator\Generator;
 use EatWhat\Exceptions\EatWhatException;
 
 class AppInit
@@ -45,10 +45,10 @@ class AppInit
 
 		// create request
 		$this->request = new EatWhatRequest();
-		$this->request->addMiddleWare(MiddlewareGenerator::generate("verifySign"));
+		$this->request->addMiddleWare(Generator::middleware("verifySign"));
 
 		// invoke
-		$this->request();
+		$this->request->invoke();
 	}
 
 
@@ -72,7 +72,7 @@ class AppInit
 		if($file && EatWhatStatic::checkFile($file)) 
 			require_once $file;
 		else 
-			throw new EatWhatException("class file is not exists.");
+			throw new EatWhatException($class." class file is not exists.");
 	}
 
 	/**

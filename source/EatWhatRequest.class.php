@@ -7,6 +7,9 @@
 
 namespace EatWhat;
 
+use EatWhat\EatWhatStatic;
+use EatWhat\Exceptions\EatWhatException;
+
 class EatWhatRequest
 {
     /**
@@ -48,15 +51,19 @@ class EatWhatRequest
      * invoke
      * 
      */
-    public function __invoke() 
+    public function invoke() 
     {
-        $handle = array_reduce(array_reverse($this->middlewares), function($next, $middleware){
-            return function($request) use($next, $middleware) {
-                $middleware($request, $next);
-            };
-        }, [$this, "call"]);
+        if(!empty($this->middlewares)) {
+            $handle = array_reduce(array_reverse($this->middlewares), function($next, $middleware){
+                return function($request) use($next, $middleware) {
+                    $middleware($request, $next);
+                };
+            }, [$this, "call"]);
 
-        $handle(new static);
+            $handle($this);
+        } else {
+            $this->call();
+        }
     }
 
     /**
@@ -65,7 +72,7 @@ class EatWhatRequest
      */
     public function call()
     {
-        echo "welcome to thre!";
+        echo "welcome to here!";
     }
 
     /**
@@ -96,23 +103,11 @@ class EatWhatRequest
     }
 
     /**
-     * get GP value
-     * 
-     */
-    public function getGPValue($key)
-    {
-        if(isset($_GET[$key])) {
-            return $_GET[$key];
-        }
-        return "";
-    }
-
-    /**
      * add a request filter
      * 
      */
     public function addMiddleWare(callable $middleware)
     {
-        $this->middwares[] = $middleware;
+        $this->middlewares[] = $middleware;
     }
 }
