@@ -45,6 +45,7 @@ class AppInit
 
 		// create request
 		$this->request = new EatWhatRequest();
+		$this->request->addMiddleWare(Generator::middleware("test"));
 		$this->request->addMiddleWare(Generator::middleware("verifySign"));
 
 		// invoke

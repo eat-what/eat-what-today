@@ -2,6 +2,7 @@
 
 namespace EatWhat\MiddleWare;
 
+use EatWhat\Middleware\MiddlewareBase;
 use EatWhat\Exceptions\EatWhatException;
 use EatWhat\AppConfig;
 use EatWhat\EatWhatStatic;
@@ -11,7 +12,7 @@ use EatWhat\EatWhatRequest;
  * check request sign middleware
  * 
  */
-class verifySign
+class verifySign implements MiddlewareBase
 {
     /**
      * return a callable handler
