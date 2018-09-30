@@ -43,6 +43,8 @@ class AppInit
 
 		$this->initInput();
 
+		$this->registerErrorHandle();
+
 		// create request
 		$this->request = new EatWhatRequest();
 		$this->request->addMiddleWare(Generator::middleware("test"));
@@ -99,6 +101,17 @@ class AppInit
                 return $file;
             }
         }
+	}
+
+	/**
+	 * register error handle
+	 * 
+	 */
+	public function registerErrorHandle()
+	{
+		$whoops = new \Whoops\Run;
+		$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+		$whoops->register();
 	}
 	
 	/**
