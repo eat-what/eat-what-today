@@ -15,8 +15,12 @@ class Generator
      */
 	public static function __callStatic($name, $args)
 	{
-		$handleClassName = "EatWhat\\".ucfirst($name)."\\".$args[0];
-        $handleClass = new $handleClassName;
-        return $handleClass->generate();
+        $handleClassName = "EatWhat\\".ucfirst($name)."\\".$args[0];
+        $generateObject = new \ReflectionMethod($handleClassName, "generate");
+        if($generateObject->getParameters()) {
+            unset($args[0]);
+            $generateParameters = $args;
+        }
+        return $handleClassName::generate(...$generateParameters);
 	}
 }

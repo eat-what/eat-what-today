@@ -19,7 +19,7 @@ class AppInit
 	 * App initalal config
 	 *
 	 */
-	public $config;
+	public $initConfig;
 
     /**
      * request
@@ -31,9 +31,9 @@ class AppInit
 	 * Initial app
 	 *
 	 */
-	public function _Init($config)
+	public function _Init($initConfig)
 	{
-		$this->config = $config;
+		$this->initConfig = $initConfig;
 
 		ob_start("ob_gzhandler");
 
@@ -43,25 +43,28 @@ class AppInit
 
 		$this->initInput();
 
-		$this->registerErrorHandle();
+		$this->initConfig["developement"] && $this->setErrorDisplayAndHandle();
 
 		// create request
 		$this->request = new EatWhatRequest();
-		$this->request->addMiddleWare(Generator::middleware("test"));
-		$this->request->addMiddleWare(Generator::middleware("verifySign"));
 
+		//verify sign
+		if($this->initConfig["api_verify_sign"]) {
+			$_GET["paramsSign"] = EatWhatStatic::getParamsSign();
+			$this->request->addMiddleWare(Generator::middleware("verifySign"));
+		}
+		Generator::storage("StorageClient", "Mysql");
 		// invoke
 		$this->request->invoke();
 	}
-
 
 	/**
 	 * autoload
 	 *
 	 */
-	public function register()
+	public function register($prepend = false)
 	{
-		spl_autoload_register([$this, "autoLoadRegister"], false, true);
+		spl_autoload_register([$this, "autoLoadRegister"], false, $prepend);
 	}
 
 
@@ -87,8 +90,8 @@ class AppInit
         $subPath = $class;
         $suffix  = '';
 
-        if( isset($this->config['classmap_static'][$class]) ) {
-            $file = $this->config['classmap_static'][$class];
+        if( isset($this->initConfig['classmap_static'][$class]) ) {
+            $file = $this->initConfig['classmap_static'][$class];
             return $file;
         }
 
@@ -96,11 +99,25 @@ class AppInit
             $suffix = substr($subPath, $lastPos).$suffix;
             $suffix = str_replace('\\', DS, $suffix);
             $subPath = substr($subPath, 0, $lastPos);
-            if ( isset($this->config['classmap_namespace'][$subPath]) ) {
-                $file = $this->config['classmap_namespace'][$subPath].$suffix.$this->config['class_file_ext'];
+            if ( isset($this->initConfig['classmap_namespace'][$subPath]) ) {
+                $file = $this->initConfig['classmap_namespace'][$subPath].$suffix.$this->initConfig['class_file_ext'];
                 return $file;
             }
         }
+	}
+
+	/**
+	 * set error display level and handle
+	 * 
+	 */
+	public function setErrorDisplayAndHandle()
+	{
+		error_reporting(E_ALL);
+		ini_set('display_errors','On');
+		ini_set('display_startup_errors','On');
+		ini_set('log_errors','On');
+
+		$this->registerErrorHandle();
 	}
 
 	/**
@@ -121,6 +138,5 @@ class AppInit
 	public function initInput()
 	{
 		EatWhatStatic::checkPostMethod() && ($_GET = array_merge($_GET, $_POST));
-		$_GET["paramsSign"] = EatWhatStatic::getParamsSign();
 	}
 }

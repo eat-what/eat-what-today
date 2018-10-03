@@ -127,27 +127,27 @@ class TemplateHelper
 
     private function getDumper()
     {
-        if (!$this->htmlDumper && class_exists('Symfony\Component\VarDumper\Cloner\VarCloner')) {
-            $this->htmlDumperOutput = new HtmlDumperOutput();
-            // re-use the same var-dumper instance, so it won't re-render the global styles/scripts on each dump.
-            $this->htmlDumper = new HtmlDumper($this->htmlDumperOutput);
+        // if (!$this->htmlDumper && class_exists('Symfony\Component\VarDumper\Cloner\VarCloner')) {
+        //     $this->htmlDumperOutput = new HtmlDumperOutput();
+        //     // re-use the same var-dumper instance, so it won't re-render the global styles/scripts on each dump.
+        //     $this->htmlDumper = new HtmlDumper($this->htmlDumperOutput);
 
-            $styles = [
-                'default' => 'color:#FFFFFF; line-height:normal; font:12px "Inconsolata", "Fira Mono", "Source Code Pro", Monaco, Consolas, "Lucida Console", monospace !important; word-wrap: break-word; white-space: pre-wrap; position:relative; z-index:99999; word-break: normal',
-                'num' => 'color:#BCD42A',
-                'const' => 'color: #4bb1b1;',
-                'str' => 'color:#BCD42A',
-                'note' => 'color:#ef7c61',
-                'ref' => 'color:#A0A0A0',
-                'public' => 'color:#FFFFFF',
-                'protected' => 'color:#FFFFFF',
-                'private' => 'color:#FFFFFF',
-                'meta' => 'color:#FFFFFF',
-                'key' => 'color:#BCD42A',
-                'index' => 'color:#ef7c61',
-            ];
-            $this->htmlDumper->setStyles($styles);
-        }
+        //     $styles = [
+        //         'default' => 'color:#FFFFFF; line-height:normal; font:12px "Inconsolata", "Fira Mono", "Source Code Pro", Monaco, Consolas, "Lucida Console", monospace !important; word-wrap: break-word; white-space: pre-wrap; position:relative; z-index:99999; word-break: normal',
+        //         'num' => 'color:#BCD42A',
+        //         'const' => 'color: #4bb1b1;',
+        //         'str' => 'color:#BCD42A',
+        //         'note' => 'color:#ef7c61',
+        //         'ref' => 'color:#A0A0A0',
+        //         'public' => 'color:#FFFFFF',
+        //         'protected' => 'color:#FFFFFF',
+        //         'private' => 'color:#FFFFFF',
+        //         'meta' => 'color:#FFFFFF',
+        //         'key' => 'color:#BCD42A',
+        //         'index' => 'color:#ef7c61',
+        //     ];
+        //     $this->htmlDumper->setStyles($styles);
+        // }
 
         return $this->htmlDumper;
     }

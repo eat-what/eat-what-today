@@ -13,4 +13,6 @@ return [
 	],
 
 	"class_file_ext" => ".class.php",
+
+	"api_verify_sign" => false,
 ];

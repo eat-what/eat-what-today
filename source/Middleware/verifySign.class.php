@@ -18,13 +18,13 @@ class verifySign implements MiddlewareBase
      * return a callable handler
      * 
      */
-    public function generate()
+    public static function generate()
     {
         return function(EatWhatRequest $request, callable $next) {
             $signature = EatWhatStatic::getGPValue("signature");
-            $verifyResult = $this->verify($signature);
+            $verifyResult = static::verify($signature);
             if( !$verifyResult ) {
-                throw new EatWhatException("sign is incorrect, check it.");
+                throw new EatWhatException("Sign is incorrect, Check it.");
             } else {
                 $next($request);
             }
@@ -35,7 +35,7 @@ class verifySign implements MiddlewareBase
      * verify sign
      * 
      */
-    public function verify($signature)
+    public static function verify($signature)
     {
         $pub_key_pem_file = AppConfig::get("pub_key_pem_file", "global");
         $pub_key = openssl_pkey_get_public($pub_key_pem_file);

@@ -34,7 +34,7 @@ class EatWhatRequest
      * method args
      * 
      */
-    public $args;
+    public $args = [];
 
     /**
      * route 
@@ -43,8 +43,8 @@ class EatWhatRequest
     public function __construct()
     {
         $params = $_GET;
-        $this->class = $_GET["cls"];
-        $this->method = $_GET["mtd"];
+        $this->class = $_GET["cls"] ?? "Eat";
+        $this->method = $_GET["mtd"] ?? "What";
     }
 
     /**
@@ -72,7 +72,15 @@ class EatWhatRequest
      */
     public function call()
     {
-        echo "welcome to here!";
+        $instanceName = "EatWhat\\Api\\" . ucfirst($this->class) . "Api";
+        if(class_exists($instanceName) && method_exists($instanceName, $this->method) && is_callable([$instanceName, $this->method])) {
+            $methodObj = new \ReflectionMethod($instanceName, $this->method);
+            if($methodObj->getParameters()) {
+                $this->getArgs();
+            }
+            $api = new $instanceName();
+            call_user_func_array([$api, $this->method], $this->args);
+        }
     }
 
     /**
@@ -81,7 +89,7 @@ class EatWhatRequest
      */
     public function setClass($class)
     {   
-        $this->$class = $class;
+        $this->class = $class;
     }
 
     /**
@@ -90,7 +98,7 @@ class EatWhatRequest
      */
     public function setMethod($method)
     {   
-        $this->$method = $method;
+        $this->method = $method;
     }
 
     /**
@@ -99,7 +107,18 @@ class EatWhatRequest
      */
     public function setArgs($args)
     {   
-        $this->$args = $args;
+        $this->args = $args;
+    }
+
+    /**
+     * get api args
+     * 
+     */
+    public function getArgs()
+    {
+        $args = $_GET;
+        unset($args["cls"], $args["mtd"]);
+        $this->setArgs($args);
     }
 
     /**

@@ -13,6 +13,6 @@ interface MiddlewareBase
      * generate a cloursor obj
      * 
      */
-    public function generate();
+    public static function generate();
     
 }

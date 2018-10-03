@@ -124,24 +124,24 @@ class PrettyPageHandler extends Handler
 
         $this->templateHelper = new TemplateHelper();
 
-        if (class_exists('Symfony\Component\VarDumper\Cloner\VarCloner')) {
-            $cloner = new VarCloner();
-            // Only dump object internals if a custom caster exists.
-            $cloner->addCasters(['*' => function ($obj, $a, $stub, $isNested, $filter = 0) {
-                $class = $stub->class;
-                $classes = [$class => $class] + class_parents($class) + class_implements($class);
+        // if (class_exists('Symfony\Component\VarDumper\Cloner\VarCloner')) {
+        //     $cloner = new VarCloner();
+        //     // Only dump object internals if a custom caster exists.
+        //     $cloner->addCasters(['*' => function ($obj, $a, $stub, $isNested, $filter = 0) {
+        //         $class = $stub->class;
+        //         $classes = [$class => $class] + class_parents($class) + class_implements($class);
 
-                foreach ($classes as $class) {
-                    if (isset(AbstractCloner::$defaultCasters[$class])) {
-                        return $a;
-                    }
-                }
+        //         foreach ($classes as $class) {
+        //             if (isset(AbstractCloner::$defaultCasters[$class])) {
+        //                 return $a;
+        //             }
+        //         }
 
-                // Remove all internals
-                return [];
-            }]);
-            $this->templateHelper->setCloner($cloner);
-        }
+        //         // Remove all internals
+        //         return [];
+        //     }]);
+        //     $this->templateHelper->setCloner($cloner);
+        // }
     }
 
     /**
