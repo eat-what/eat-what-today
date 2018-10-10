@@ -43,7 +43,7 @@ class AppInit
 
 		$this->initInput();
 
-		$this->initConfig["developement"] && $this->setErrorDisplayAndHandle();
+		DEVEMODE && $this->setErrorDisplayAndHandle();
 
 		// create request
 		$this->request = new EatWhatRequest();
@@ -111,7 +111,7 @@ class AppInit
 	 * 
 	 */
 	public function setErrorDisplayAndHandle()
-	{
+	{die('ss');
 		error_reporting(E_ALL);
 		ini_set('display_errors','On');
 		ini_set('display_startup_errors','On');

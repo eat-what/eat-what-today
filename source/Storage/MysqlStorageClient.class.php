@@ -8,7 +8,8 @@
 namespace EatWhat\Storage;
 
 use EatWhat\AppConfig;
-use EatWhat\Exception\EatWhatException;
+use EatWhat\EatWhatStatic;
+use EatWhat\Exception\EatWhatPdoException;
 
 class MysqlStorageClient
 {
@@ -19,6 +20,22 @@ class MysqlStorageClient
     public static function getClient()
     {
         $config = AppConfig::get("MysqlStorageClient", "storage");
-        print_r($config);die;
+        $dsn = "mysql:dbname=".$config["dbname"].";host=".$config["host"];
+        try {
+            $options = [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_PERSISTENT => false,
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "set names utf8",
+            ];
+
+            $pdoClient = new \PDO($dsn, $config["dbuser"], $config["passwd"], $options);
+            return $this->pdoClient;
+        } catch (EatWhatPdoException $exception) {
+            if( !DEVEMODE ) {
+                EatWhatStatic::log($exception->getMessage());
+            } else {
+                throw $exception;
+            }
+        }
     }
 }
