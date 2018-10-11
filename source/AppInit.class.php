@@ -11,6 +11,8 @@ use EatWhat\EatWhatRequest;
 use EatWhat\EatWhatStatic;
 use EatWhat\Generator\Generator;
 use EatWhat\Exceptions\EatWhatException;
+use Whoops\Run;
+use Whoops\Handler\PrettyPageHandler;
 
 class AppInit
 {
@@ -43,7 +45,7 @@ class AppInit
 
 		$this->initInput();
 
-		DEVEMODE && $this->setErrorDisplayAndHandle();
+		DEVELOPMODE && $this->setErrorDisplayAndHandle();
 
 		// create request
 		$this->request = new EatWhatRequest();
@@ -53,7 +55,7 @@ class AppInit
 			$_GET["paramsSign"] = EatWhatStatic::getParamsSign();
 			$this->request->addMiddleWare(Generator::middleware("verifySign"));
 		}
-		Generator::storage("StorageClient", "Mysql");
+		Generator::storage("StorageClient", "Mongodb");
 		// invoke
 		$this->request->invoke();
 	}
@@ -111,7 +113,7 @@ class AppInit
 	 * 
 	 */
 	public function setErrorDisplayAndHandle()
-	{die('ss');
+	{
 		error_reporting(E_ALL);
 		ini_set('display_errors','On');
 		ini_set('display_startup_errors','On');
@@ -126,8 +128,8 @@ class AppInit
 	 */
 	public function registerErrorHandle()
 	{
-		$whoops = new \Whoops\Run;
-		$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+		$whoops = new Run;
+		$whoops->pushHandler(new PrettyPageHandler);
 		$whoops->register();
 	}
 	

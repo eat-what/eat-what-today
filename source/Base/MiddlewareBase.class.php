@@ -1,6 +1,6 @@
 <?php
 
-namespace EatWhat\Middleware;
+namespace EatWhat\Base;
 
 /**
  * Middleware Base

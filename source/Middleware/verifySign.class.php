@@ -2,7 +2,7 @@
 
 namespace EatWhat\MiddleWare;
 
-use EatWhat\Middleware\MiddlewareBase;
+use EatWhat\Base\MiddlewareBase;
 use EatWhat\Exceptions\EatWhatException;
 use EatWhat\AppConfig;
 use EatWhat\EatWhatStatic;
