@@ -55,7 +55,7 @@ class AppInit
 			$_GET["paramsSign"] = EatWhatStatic::getParamsSign();
 			$this->request->addMiddleWare(Generator::middleware("verifySign"));
 		}
-		Generator::storage("StorageClient", "Mongodb");
+		
 		// invoke
 		$this->request->invoke();
 	}
