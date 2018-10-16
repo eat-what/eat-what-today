@@ -3,29 +3,19 @@
 namespace EatWhat\Base;
 
 use EatWhat\AppConfig;
+use EatWhat\EatWhatBase;
 
 /**
  * Middleware Base
  * 
  */
-abstract class StorageBase
+abstract class StorageBase extends EatWhatBase
 {
     /**
      * config
      * 
      */
     public static $config;
-
-    /**
-     * static classname
-     * 
-     */
-    public static function className($withoutNamespace = false)
-    {
-        $classname = get_called_class();
-        $withoutNamespace && ($classname = substr($classname, (strrpos($classname, "\\") + 1)));
-        return $classname;
-    }
 
     /**
      * get storage obj config

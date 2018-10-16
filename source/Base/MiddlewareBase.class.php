@@ -2,17 +2,19 @@
 
 namespace EatWhat\Base;
 
+use EatWhat\EatWhatBase;
+
 /**
  * Middleware Base
  * 
  */
 
-interface MiddlewareBase
+abstract class MiddlewareBase extends EatWhatBase
 {
     /**
      * generate a cloursor obj
      * 
      */
-    public static function generate();
+    abstract public static function generate();
     
 }

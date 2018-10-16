@@ -12,7 +12,7 @@ use EatWhat\EatWhatRequest;
  * check request sign middleware
  * 
  */
-class verifySign implements MiddlewareBase
+class verifySign extends MiddlewareBase
 {
     /**
      * return a callable handler
