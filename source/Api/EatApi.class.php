@@ -35,10 +35,12 @@ class EatApi extends ApiBase
         if( $verifyResult ) {
             $cmd = "cd /web/www/eatwhat/ && git pull --rebase";
             pclose(popen($cmd, "r"));
+            echo "Success";
         } else {
             EatWhatLog::logging("Illegality Github WebHook Request", [
                 "ip" => getenv("REMOTE_ADDR"),
             ]);
+            echo "Faild";
         }
     }
 }
