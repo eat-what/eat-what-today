@@ -25,7 +25,9 @@ class EatApi
      */
     public function githubWebHook()
     {
-        $json = json_decode(file_get_contents("php://input"), true);$json = "test";
-        EatWhatLog::logging($json);
+        // $json = json_decode(file_get_contents("php://input"), true);
+        // $cmd = "git pull --rebase";
+        // pclose(popen($cmd, "r"));
+        
     }
 }
