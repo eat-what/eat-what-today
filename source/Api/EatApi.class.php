@@ -33,8 +33,9 @@ class EatApi extends ApiBase
     {
         $verifyResult = $this->verifyGithubWebHookSignature();
         if( $verifyResult ) {
+            putenv("HOME=/home/daemon/");
             $cmd = "cd /web/www/eat-what/ && git pull --rebase";
-            //pclose(popen($cmd, "r"));
+            pclose(popen($cmd, "r"));
             echo "Success";
         } else {
             EatWhatLog::logging("Illegality Github WebHook Request", [
