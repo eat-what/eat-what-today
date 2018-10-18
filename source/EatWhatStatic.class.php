@@ -77,7 +77,7 @@ class EatWhatStatic
      * illegal return
      * 
      */
-    public function illegalRequestReturn()
+    public static function illegalRequestReturn()
     {
         http_response_code(500);
         exit();
