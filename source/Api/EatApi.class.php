@@ -17,31 +17,11 @@ class EatApi extends ApiBase
     use \EatWhat\Traits\EatTrait;
 
     /**
-     * method what!
+     * method what! return a rand decision that you eat
      * 
      */
     public function What()
     {
-        echo "EatWhat!";
-    }
-
-    /**
-     * github Webhook when push event triggered
-     * 
-     */
-    public function githubWebHook()
-    {
-        $verifyResult = $this->verifyGithubWebHookSignature();
-        if( $verifyResult ) {
-            putenv("HOME=/home/daemon/");
-            $cmd = "cd /web/www/eat-what/ && git pull --rebase";
-            pclose(popen($cmd, "r"));
-            echo "Success";
-        } else {
-            EatWhatLog::logging("Illegality Github WebHook Request", [
-                "ip" => getenv("REMOTE_ADDR"),
-            ]);
-            echo "Faild";
-        }
+        
     }
 }
