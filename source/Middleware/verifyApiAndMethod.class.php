@@ -30,6 +30,8 @@ class verifyApiAndMethod extends MiddlewareBase
                 if( !DEVELOPMODE ) {
                     EatWhatLog::logging("Illegality Request With Wrong Api or Method.", [
                         "ip" => getenv("REMOTE_ADDR"),
+                        "api" => $api,
+                        "method" => $method,
                     ]);
                     EatWhatStatic::illegalRequestReturn();
                 } else {
