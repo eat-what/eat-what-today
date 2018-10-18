@@ -6,7 +6,7 @@ namespace EatWhat\Traits;
  * Eat Traits For Eat Api
  * 
  */
-trait EatTrait
+trait EatWhatTrait
 {
     
 }

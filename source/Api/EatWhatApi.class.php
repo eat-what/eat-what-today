@@ -9,18 +9,18 @@ use EatWhat\Base\ApiBase;
  * Eat Api
  * 
  */
-class EatApi extends ApiBase
+class EatWhatApi extends ApiBase
 {
     /**
      * use Trait
      */
-    use \EatWhat\Traits\EatTrait;
+    use \EatWhat\Traits\EatWhatTrait;
 
     /**
-     * method what! return a rand decision that you eat
+     * method return a rand decision that you eat
      * 
      */
-    public function What()
+    public function EatWhat()
     {
         
     }

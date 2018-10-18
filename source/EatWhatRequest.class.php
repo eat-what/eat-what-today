@@ -43,8 +43,8 @@ class EatWhatRequest
     public function __construct()
     {
         $params = $_GET;
-        $this->class = $_GET["cls"] ?? "Eat";
-        $this->method = $_GET["mtd"] ?? "What";
+        $this->setClass($_GET["cls"] ?? "EatWhat");
+        $this->setMethod($_GET["mtd"] ?? "EatWhat");
     }
 
     /**
