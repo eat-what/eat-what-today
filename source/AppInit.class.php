@@ -50,6 +50,9 @@ class AppInit
 		// create request
 		$this->request = new EatWhatRequest();
 
+		//verify api and method
+		$this->request->addMiddleWare(Generator::middleware("verifyApiAndMethod"));
+
 		//verify sign
 		if($this->initConfig["api_verify_sign"]) {
 			$_GET["paramsSign"] = EatWhatStatic::getParamsSign();

@@ -16,25 +16,25 @@ class EatWhatRequest
      * middlewares 
      * 
      */
-    public $middlewares = [];
+    private $middlewares = [];
 
     /**
-     * class
+     * api
      * 
      */
-    public $class;
+    private $api;
 
     /**
      * method 
      * 
      */
-    public $method;
+    private $method;
 
     /**
      * method args
      * 
      */
-    public $args = [];
+    private $args = [];
 
     /**
      * route 
@@ -43,7 +43,7 @@ class EatWhatRequest
     public function __construct()
     {
         $params = $_GET;
-        $this->setClass($_GET["cls"] ?? "EatWhat");
+        $this->setApi($_GET["api"] ?? "EatWhat");
         $this->setMethod($_GET["mtd"] ?? "EatWhat");
     }
 
@@ -72,7 +72,7 @@ class EatWhatRequest
      */
     public function call()
     {
-        $instanceName = "EatWhat\\Api\\" . ucfirst($this->class) . "Api";
+        $instanceName = "EatWhat\\Api\\" . ucfirst($this->api) . "Api";
         if(class_exists($instanceName) && method_exists($instanceName, $this->method) && is_callable([$instanceName, $this->method])) {
             $methodObj = new \ReflectionMethod($instanceName, $this->method);
             if($methodObj->getParameters()) {
@@ -84,19 +84,19 @@ class EatWhatRequest
     }
 
     /**
-     * set class
+     * set api
      * 
      */
-    public function setClass($class)
+    private function setApi($api)
     {   
-        $this->class = $class;
+        $this->api = $api;
     }
 
     /**
      * set method
      * 
      */
-    public function setMethod($method)
+    private function setMethod($method)
     {   
         $this->method = $method;
     }
@@ -105,7 +105,7 @@ class EatWhatRequest
      * set method
      * 
      */
-    public function setArgs($args)
+    private function setArgs($args)
     {   
         $this->args = $args;
     }
@@ -117,8 +117,26 @@ class EatWhatRequest
     public function getArgs()
     {
         $args = $_GET;
-        unset($args["cls"], $args["mtd"]);
+        unset($args["api"], $args["mtd"]);
         $this->setArgs($args);
+    }
+
+    /**
+     * get api
+     * 
+     */
+    public function getApi()
+    {
+        return $this->api;
+    }
+
+    /**
+     * get method
+     * 
+     */
+    public function getMethod()
+    {
+        return $this->method;
     }
 
     /**

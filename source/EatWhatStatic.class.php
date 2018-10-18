@@ -72,4 +72,14 @@ class EatWhatStatic
         }
         return "";
     }
+
+    /**
+     * illegal return
+     * 
+     */
+    public function illegalRequestReturn()
+    {
+        http_response_code(500);
+        exit();
+    }
 }

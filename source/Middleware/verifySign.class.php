@@ -2,11 +2,12 @@
 
 namespace EatWhat\MiddleWare;
 
-use EatWhat\Base\MiddlewareBase;
-use EatWhat\Exceptions\EatWhatException;
 use EatWhat\AppConfig;
+use EatWhat\EatWhatLog;
 use EatWhat\EatWhatStatic;
 use EatWhat\EatWhatRequest;
+use EatWhat\Base\MiddlewareBase;
+use EatWhat\Exceptions\EatWhatException;
 
 /**
  * check request sign middleware
@@ -23,8 +24,16 @@ class verifySign extends MiddlewareBase
         return function(EatWhatRequest $request, callable $next) {
             $signature = EatWhatStatic::getGPValue("signature");
             $verifyResult = static::verify($signature);
+
             if( !$verifyResult ) {
-                throw new EatWhatException("Sign is incorrect, Check it.");
+                if( !DEVELOPMODE ) {
+                    EatWhatLog::logging("Illegality Request With Wrong Sinature.", [
+                        "ip" => getenv("REMOTE_ADDR"),
+                    ]);
+                    EatWhatStatic::illegalRequestReturn();
+                } else {
+                    throw new EatWhatException("Sign is incorrect, Check it.");
+                }
             } else {
                 $next($request);
             }
