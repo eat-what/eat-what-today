@@ -21,7 +21,8 @@ class verifyApiAndMethod extends MiddlewareBase
      */
     public static function generate()
     {
-        return function(EatWhatRequest $request, callable $next) {
+        return function(EatWhatRequest $request, callable $next) 
+        {
             $api = $request->getApi();
             $method = $request->getMethod();
             $legalApiAndMethod = AppConfig::get("legalApiAndMethod", "global");

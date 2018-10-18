@@ -21,7 +21,8 @@ class verifySign extends MiddlewareBase
      */
     public static function generate()
     {
-        return function(EatWhatRequest $request, callable $next) {
+        return function(EatWhatRequest $request, callable $next) 
+        {
             $signature = EatWhatStatic::getGPValue("signature");
             $verifyResult = static::verify($signature);
 
