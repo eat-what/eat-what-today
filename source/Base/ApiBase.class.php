@@ -17,8 +17,8 @@ class ApiBase extends EatWhatBase
      */
     public function __construct()
     {
-        $this->pdo = Generator::storage("storageClient", "Mysql");
-        $this->redis = Generator::storage("storageClient", "Redis");
-        $this->mongodb = Generator::storage("storageClient", "Mongodb");
+        //$this->pdo = Generator::storage("storageClient", "Mysql");
+        //$this->redis = Generator::storage("storageClient", "Redis");
+        //$this->mongodb = Generator::storage("storageClient", "Mongodb");
     }
 }
