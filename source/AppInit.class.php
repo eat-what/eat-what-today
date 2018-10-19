@@ -60,6 +60,11 @@ class AppInit
 			$_GET["paramsSign"] = EatWhatStatic::getParamsSign();
 			$this->request->addMiddleWare(Generator::middleware("verifySign"));
 		}
+
+		// verify user
+		if($_COOKIE["access_token"]) {
+			$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
+		}
 		
 		// invoke
 		$this->request->invoke();

@@ -13,6 +13,12 @@ use EatWhat\Exceptions\EatWhatException;
 class EatWhatRequest
 {
     /**
+     * userid
+     * 
+     */
+    public static $userid = null;
+
+    /**
      * middlewares 
      * 
      */
