@@ -25,12 +25,9 @@ class WebLogicApi extends ApiBase
         $verifyResult = $this->verifyGithubWebHookSignature();
         if( $verifyResult ) {
             putenv("HOME=/home/daemon/");
-            $cmd = "cd /web/www/eat-what/ && git pull --rebase";
-            $resource = popen($cmd, "r");
-            if($resource)
-                echo "Success";
-            else 
-                echo "popen faild";
+            chdir("/web/www/eat-what/");
+            $cmd = "git pull --rebase";
+            shell_exec($cmd);
         } else {
             EatWhatLog::logging("Illegality Github WebHook Request", [
                 "ip" => getenv("REMOTE_ADDR"),
