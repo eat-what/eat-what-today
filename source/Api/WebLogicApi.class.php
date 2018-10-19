@@ -26,8 +26,9 @@ class WebLogicApi extends ApiBase
         if( $verifyResult ) {
             putenv("HOME=/home/daemon/");
             chdir("/web/www/eat-what/");
-            $cmd = "git pull --rebase";
-            shell_exec($cmd);
+            $cmd = "git pull --rebase 2>&1";
+            exec($cmd, $o);
+            print_r($o);
         } else {
             EatWhatLog::logging("Illegality Github WebHook Request", [
                 "ip" => getenv("REMOTE_ADDR"),
