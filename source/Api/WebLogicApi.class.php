@@ -24,8 +24,8 @@ class WebLogicApi extends ApiBase
     {
         $verifyResult = $this->verifyGithubWebHookSignature();
         if( $verifyResult ) {
-            putenv("HOME=/home/daemon/");
             chdir("/web/www/eat-what/");
+            putenv("HOME=/home/daemon/");
             $cmd = "git pull --rebase 2>&1";
             exec($cmd, $o);
             print_r($o);
