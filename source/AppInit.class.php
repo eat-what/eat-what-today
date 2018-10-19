@@ -23,11 +23,11 @@ class AppInit
 	 */
 	public $initConfig;
 
-    /**
-     * request
-     *
-     */
-    public $request;
+	/**
+	 * request
+	 *
+	 */
+	public $request;
 
 	/**
 	 * Initial app
@@ -93,24 +93,24 @@ class AppInit
 	 *
 	 */
 	public function findFile($class) 
-    {
-        $subPath = $class;
-        $suffix  = '';
+	{
+    	$subPath = $class;
+    	$suffix  = '';
 
-        if( isset($this->initConfig['classmap_static'][$class]) ) {
-            $file = $this->initConfig['classmap_static'][$class];
-            return $file;
-        }
+    	if( isset($this->initConfig['classmap_static'][$class]) ) {
+			$file = $this->initConfig['classmap_static'][$class];
+			return $file;
+		}
 
-        while( false !== $lastPos = strrpos($subPath, '\\') ) {
-            $suffix = substr($subPath, $lastPos).$suffix;
-            $suffix = str_replace('\\', DS, $suffix);
-            $subPath = substr($subPath, 0, $lastPos);
-            if ( isset($this->initConfig['classmap_namespace'][$subPath]) ) {
-                $file = $this->initConfig['classmap_namespace'][$subPath].$suffix.$this->initConfig['class_file_ext'];
-                return $file;
-            }
-        }
+		while( false !== $lastPos = strrpos($subPath, '\\') ) {
+			$suffix = substr($subPath, $lastPos).$suffix;
+			$suffix = str_replace('\\', DS, $suffix);
+			$subPath = substr($subPath, 0, $lastPos);
+			if ( isset($this->initConfig['classmap_namespace'][$subPath]) ) {
+				$file = $this->initConfig['classmap_namespace'][$subPath].$suffix.$this->initConfig['class_file_ext'];
+				return $file;
+			}
+		}
 	}
 
 	/**
