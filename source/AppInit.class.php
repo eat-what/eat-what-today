@@ -62,9 +62,7 @@ class AppInit
 		}
 
 		// verify user
-		if($_COOKIE["access_token"]) {
-			$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
-		}
+		$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
 		
 		// invoke
 		$this->request->invoke();
