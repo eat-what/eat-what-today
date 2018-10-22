@@ -62,7 +62,7 @@ class AppInit
 		}
 
 		// verify user
-		//$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
+		$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
 		
 		// invoke
 		$this->request->invoke();

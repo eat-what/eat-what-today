@@ -8,6 +8,7 @@
 namespace EatWhat;
 
 use EatWhat\EatWhatStatic;
+use EatWhat\EatWhatJwt;
 use EatWhat\Exceptions\EatWhatException;
 
 class EatWhatRequest
@@ -16,7 +17,7 @@ class EatWhatRequest
      * userid
      * 
      */
-    public static $userid = null;
+    private $userData = [];
 
     /**
      * middlewares 
@@ -43,14 +44,122 @@ class EatWhatRequest
     private $args = [];
 
     /**
+     * access token analyzer
+     * 
+     */
+    private $accessTokenAnalyzer;
+
+    /**
      * route 
      * 
      */
     public function __construct()
     {
         $params = $_GET;
+        $this->setAccessTokenAnalyzer();
         $this->setApi($_GET["api"] ?? "EatWhat");
         $this->setMethod($_GET["mtd"] ?? "EatWhat");
+    }
+
+    /**
+     * set api
+     * 
+     */
+    private function setApi($api)
+    {   
+        $this->api = $api;
+    }
+
+    /**
+     * set method
+     * 
+     */
+    private function setMethod($method)
+    {   
+        $this->method = $method;
+    }
+
+    /**
+     * set method
+     * 
+     */
+    private function setArgs($args)
+    {   
+        $this->args = $args;
+    }
+
+    /**
+     * set access token analyzer
+     * 
+     */
+    private function setAccessTokenAnalyzer()
+    {
+        $this->accessTokenAnalyzer = new EatWhatJwt(null, null);
+    }
+
+    /**
+     * set access token analyzer
+     * 
+     */
+    public function setUserData($userData)
+    {
+        $this->userData = $userData;
+    }
+
+    /**
+     * get api args
+     * 
+     */
+    public function getArgs()
+    {
+        $args = $_GET;
+        unset($args["api"], $args["mtd"]);
+        $this->setArgs($args);
+    }
+
+    /**
+     * get api
+     * 
+     */
+    public function getApi()
+    {
+        return $this->api;
+    }
+
+    /**
+     * get method
+     * 
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * get user data
+     * 
+     */
+    public function getUserData()
+    {
+        return $this->userData;
+    }
+
+    /**
+     * get access token analyzer obj
+     * 
+     */
+    public function getAccessTokenAnalyzer()
+    {
+        return $this->accessTokenAnalyzer;
+    }
+
+    /**
+     * add a request filter
+     * 
+     */
+    public function addMiddleWare(callable $middleware)
+    {
+        $this->middlewares[] = $middleware;
     }
 
     /**
@@ -84,73 +193,8 @@ class EatWhatRequest
             if($methodObj->getParameters()) {
                 $this->getArgs();
             }
-            $api = new $instanceName();
+            $api = new $instanceName($this);
             call_user_func_array([$api, $this->method], $this->args);
         }
-    }
-
-    /**
-     * set api
-     * 
-     */
-    private function setApi($api)
-    {   
-        $this->api = $api;
-    }
-
-    /**
-     * set method
-     * 
-     */
-    private function setMethod($method)
-    {   
-        $this->method = $method;
-    }
-
-    /**
-     * set method
-     * 
-     */
-    private function setArgs($args)
-    {   
-        $this->args = $args;
-    }
-
-    /**
-     * get api args
-     * 
-     */
-    public function getArgs()
-    {
-        $args = $_GET;
-        unset($args["api"], $args["mtd"]);
-        $this->setArgs($args);
-    }
-
-    /**
-     * get api
-     * 
-     */
-    public function getApi()
-    {
-        return $this->api;
-    }
-
-    /**
-     * get method
-     * 
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * add a request filter
-     * 
-     */
-    public function addMiddleWare(callable $middleware)
-    {
-        $this->middlewares[] = $middleware;
     }
 }

@@ -22,6 +22,6 @@ class EatWhatApi extends ApiBase
      */
     public function EatWhat()
     {
-        
+        $this->test();
     }
 }

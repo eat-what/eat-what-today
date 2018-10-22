@@ -8,5 +8,8 @@ namespace EatWhat\Traits;
  */
 trait EatWhatTrait
 {
-    
+    public function test()
+    {
+        print_r($this->request->getUserData());
+    }
 }
