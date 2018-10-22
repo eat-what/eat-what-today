@@ -79,18 +79,17 @@ class EatWhatStatic
      */
     public static function illegalRequestReturn()
     {
-        $output = static::figlet("eat-what");
+        $output = <<<EATWHAT
+------------------------------------------------------------
+|        _                _           _                     |
+|        ___  __ _| |_    __      _| |__   __ _| |_         |
+|       / _ \/ _` | __|___\ \ /\ / / '_ \ / _` | __|        |
+|      |  __/ (_| | ||_____\ V  V /| | | | (_| | |_         |
+|       \___|\__,_|\__|     \_/\_/ |_| |_|\__,_|\__|        |
+|                                                           | 
+------------------------------------------------------------
+EATWHAT;
         http_response_code(500);
         exit($output);
-    }
-
-    /**
-     * echo assic message by figlet 
-     * 
-     */
-    public static function figlet($message)
-    {
-        $output = exec("figlet $message", $output);
-        return $output;
     }
 }

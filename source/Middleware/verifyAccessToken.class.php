@@ -19,7 +19,8 @@ class verifyAccessToken extends MiddlewareBase
     {
         return function(EatWhatRequest $request, callable $next)
         {
-            $accessToken = $_COOKIE["access_token"];
+            // $accessToken = $_COOKIE["access_token"];
+            $next($request);
         };
     }
 }
