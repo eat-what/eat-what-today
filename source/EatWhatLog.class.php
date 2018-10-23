@@ -23,10 +23,10 @@ class EatWhatLog
      * log to file simplely
      * 
      */
-    public static function logging(string $message, $extra = [], $target = "file")
+    public static function logging(string $message, $extra = [], $target = "file", $fileName = "eat_what.log")
     {
         $logger = self::getLogger();
-        ($target == "file") && ($logger->pushHandler(new StreamHandler(LOG_PATH.'eat_what.log', Logger::DEBUG)));
+        ($target == "file") && ($logger->pushHandler(new StreamHandler(LOG_PATH.$fileName, Logger::DEBUG)));
         $logger->pushHandler(new FirePHPHandler());
 
         $logger->info($message, $extra);

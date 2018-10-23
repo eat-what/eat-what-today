@@ -2,6 +2,8 @@
 
 namespace EatWhat\Middleware;
 
+use EatWhat\EatWhatLog;
+use EatWhat\EatWhatStatic;
 use EatWhat\EatWhatRequest;
 use EatWhat\Base\MiddlewareBase;
 use EatWhat\Exceptions\EatWhatException;
@@ -20,15 +22,21 @@ class verifyAccessToken extends MiddlewareBase
     {
         return function(EatWhatRequest $request, callable $next)
         {
-            $verifyResult = $request->getAccessTokenAnalyzer()->verify();
+            $analyzer = $request->getAccessTokenAnalyzer();
+            $verifyResult = $analyzer->verify();
             if(!$verifyResult) {
+                $extraErrorMessage = $analyzer->getExtraErrorMessage();
                 if( !DEVELOPMODE ) {
                     EatWhatLog::logging("Illegality Access Token.", [
                         "ip" => getenv("REMOTE_ADDR"),
-                    ]);
+                        "extra_error_message" => $extraErrorMessage,
+                    ],
+                    "file",
+                    "access_token.log"
+                    );
                     EatWhatStatic::illegalRequestReturn();
                 } else {
-                    throw new EatWhatException("Illegality Access Token, Check it.");
+                    throw new EatWhatException("Illegality Access Token, Check it. ".$extraErrorMessage);
                 }
             } else {
                 $request->setUserData($verifyResult);
