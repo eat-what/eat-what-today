@@ -12,9 +12,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "node",
-      "mocha",
-      "chai"
+      "webpack-env",
+      "jest"
     ],
     "paths": {
       "@/*": [
