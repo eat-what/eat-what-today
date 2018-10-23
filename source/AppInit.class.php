@@ -52,6 +52,9 @@ class AppInit
 		// create request
 		$this->request = new EatWhatRequest();
 
+		// verify user
+		$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
+
 		//verify api and method
 		$this->request->addMiddleWare(Generator::middleware("verifyApiAndMethod"));
 
@@ -60,9 +63,6 @@ class AppInit
 			$_GET["paramsSign"] = EatWhatStatic::getParamsSign();
 			$this->request->addMiddleWare(Generator::middleware("verifySign"));
 		}
-
-		// verify user
-		$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
 		
 		// invoke
 		$this->request->invoke();

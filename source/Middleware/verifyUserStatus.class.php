@@ -14,7 +14,7 @@ use EatWhat\Exceptions\EatWhatException;
  * check request api and mtd legality
  * 
  */
-class verifyApiAndMethod extends MiddlewareBase
+class verifyUserStatus extends MiddlewareBase
 {
     /**
      * return a callable function
@@ -24,28 +24,23 @@ class verifyApiAndMethod extends MiddlewareBase
     {
         return function(EatWhatRequest $request, callable $next) 
         {
-            $api = $request->getApi();
-            $method = $request->getMethod();
-            $legalApiAndMethod = AppConfig::get("legalApiAndMethod", "global");
-
-            if(!isset($legalApiAndMethod[$api]) || !in_array($method, $legalApiAndMethod[$api])) {
+            $userData = $request->getUserData();
+            if($userData["userStatus"] < 0) {
                 if( !DEVELOPMODE ) {
-                    EatWhatLog::logging("Illegality Request With Wrong Api or Method.", [
+                    EatWhatLog::logging("Illegality User Action.", [
                         "ip" => getenv("REMOTE_ADDR"),
                         "api" => $api,
                         "method" => $method,
-                    ]);
+                    ],
+                    "file",
+                    "user_action.log"
+                    );
                     EatWhatStatic::illegalRequestReturn();
                 } else {
-                    throw new EatWhatException("Wrong Api or Method, Check it.");
+                    throw new EatWhatException("Illegality User Action, Log In.");
                 }
             } else {
-                if($api == "User") {
-                    $verifyUserStatus = Generator::middleware("verifyUserStatus");
-                    $verifyUserStatus($request, $next);
-                } else {
-                    $next($request);
-                }
+                $next($request);
             }
         };
     }

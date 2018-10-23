@@ -146,10 +146,11 @@ class EatWhatJwt
             return false;
         }
 
+        $jwtPayload["data"]["userStatus"] = 1;
+
         // expire
         if($jwtPayload["exp"] <= $_SERVER["REQUEST_TIME"]) {
-            $this->setExtraErrorMessage("Token Expired.");
-            return false;
+            $jwtPayload["data"]["userStatus"] = -1;
         }
 
         return $jwtPayload["data"];

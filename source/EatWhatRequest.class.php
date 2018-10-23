@@ -67,7 +67,7 @@ class EatWhatRequest
      */
     private function setApi($api)
     {   
-        $this->api = $api;
+        $this->api = ucfirst($api);
     }
 
     /**
