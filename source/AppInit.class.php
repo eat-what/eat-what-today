@@ -7,12 +7,12 @@
 
 namespace EatWhat;
 
-use EatWhat\EatWhatRequest;
-use EatWhat\EatWhatStatic;
-use EatWhat\Generator\Generator;
-use EatWhat\Exceptions\EatWhatException;
 use Whoops\Run;
+use EatWhat\EatWhatStatic;
+use EatWhat\EatWhatRequest;
+use EatWhat\Generator\Generator;
 use Whoops\Handler\PrettyPageHandler;
+use EatWhat\Exceptions\EatWhatException;
 
 class AppInit
 {
@@ -46,6 +46,8 @@ class AppInit
 		$this->register();
 
 		$this->initInput();
+
+		$this->setGlobal();
 
 		DEVELOPMODE && $this->setErrorDisplayAndHandle();
 
@@ -148,5 +150,27 @@ class AppInit
 	public function initInput()
 	{
 		EatWhatStatic::checkPostMethod() && ($_GET = array_merge($_GET, $_POST));
+	}
+
+	/**
+	 * set some defiend variable etc(ClientFlag)
+	 * 
+	 */
+	public function setGlobal()
+	{
+		define("CLIENT_FLAG", $this->getClientFlag());
+		// define();
+	}
+
+	/**
+	 * get client flag (etc miniapp = 2,web = 1)
+	 * 
+	 */
+	public function getClientFlag()
+	{
+		if(isset($_GET["miniapp"])) {
+			return 2;
+		}
+		return 1;
 	}
 }

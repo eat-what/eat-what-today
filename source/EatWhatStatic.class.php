@@ -92,4 +92,37 @@ EATWHAT;
         http_response_code(500);
         exit($output);
     }
+
+    /**
+     * convert a number to a specify base, $int is a decimal number
+     * 
+     */
+    public static function convertBase(int $int, $tobase) : string
+    {
+        if($tobase <= 32 && $tobase >= 2) {
+            return base_convert($int, 10, $tobase);
+        } else if($tobase > 32 && $tobase <= 62) {
+            $mod = self::numberToAscii($int % $tobase);
+            $div = (int)($int / $tobase);
+            if($div >= $tobase) {
+                return self::convertBase($div, $tobase) . $mod;
+            } else {
+                return self::numberToAscii($div) . $mod;
+            }
+        }
+    }
+
+    /**
+     * multiple band and ascii convert by bit
+     * 
+     */
+    public static function numberToAscii($num)
+    {
+        if($num >= 10 && $num <= 35) {
+            $num = chr($num + 55);
+        } else if($num > 35 && $num <= 61) {
+            $num = chr($num + 61);
+        }
+        return $num;
+    }
 }

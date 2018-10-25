@@ -10,6 +10,6 @@ trait EatWhatTrait
 {
     public function test()
     {
-        print_r($this->request->getUserData());
+        var_dump(\EatWhat\EatWhatStatic::convertBase(4572, 62));
     }
 }

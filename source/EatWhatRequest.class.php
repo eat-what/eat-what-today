@@ -10,6 +10,7 @@ namespace EatWhat;
 use EatWhat\EatWhatStatic;
 use EatWhat\EatWhatJwt;
 use EatWhat\Exceptions\EatWhatException;
+use EatWhat\Controller\UserController;
 
 class EatWhatRequest
 {
@@ -107,6 +108,15 @@ class EatWhatRequest
     }
 
     /**
+     * set user status
+     * 
+     */
+    public function setUserStatus($userStatus)
+    {
+        $this->userData && ($this->userData["userStatus"] = $userStatus);
+    }
+
+    /**
      * get api args
      * 
      */
@@ -196,5 +206,14 @@ class EatWhatRequest
             $api = new $instanceName($this);
             call_user_func_array([$api, $this->method], $this->args);
         }
+    }
+
+    /**
+     * out put result with json format
+     * 
+     */
+    public function outputResult($result = [])
+    {
+        
     }
 }

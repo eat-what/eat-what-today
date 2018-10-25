@@ -25,20 +25,14 @@ class verifyUserStatus extends MiddlewareBase
         return function(EatWhatRequest $request, callable $next) 
         {
             $userData = $request->getUserData();
-            if($userData["userStatus"] < 0) {
-                if( !DEVELOPMODE ) {
-                    EatWhatLog::logging("Illegality User Action.", [
-                        "ip" => getenv("REMOTE_ADDR"),
-                        "api" => $api,
-                        "method" => $method,
-                    ],
-                    "file",
-                    "user_action.log"
-                    );
-                    EatWhatStatic::illegalRequestReturn();
-                } else {
-                    throw new EatWhatException("Illegality User Action, Log In.");
-                }
+            if(empty($userData)) {
+                $request->outputResult([
+                    "login" => 1,
+                ]);
+            } else if($userData["userStatus"] < 0) {
+                $request->outputResult([
+                    "relogin" => 1,
+                ]);
             } else {
                 $next($request);
             }
