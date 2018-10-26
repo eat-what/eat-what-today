@@ -8,7 +8,6 @@
 namespace EatWhat;
 
 use EatWhat\EatWhatStatic;
-use EatWhat\EatWhatJwt;
 use EatWhat\Exceptions\EatWhatException;
 use EatWhat\Controller\UserController;
 
@@ -54,10 +53,10 @@ class EatWhatRequest
      * route 
      * 
      */
-    public function __construct()
+    public function __construct(EatWhatJwt $analyzer)
     {
         $params = $_GET;
-        $this->setAccessTokenAnalyzer();
+        $this->setAccessTokenAnalyzer($analyzer);
         $this->setApi($_GET["api"] ?? "EatWhat");
         $this->setMethod($_GET["mtd"] ?? "EatWhat");
     }
@@ -93,9 +92,9 @@ class EatWhatRequest
      * set access token analyzer
      * 
      */
-    private function setAccessTokenAnalyzer()
+    private function setAccessTokenAnalyzer(EatWhatJwt $analyzer)
     {
-        $this->accessTokenAnalyzer = new EatWhatJwt(null, null);
+        $this->accessTokenAnalyzer = $analyzer;
     }
 
     /**

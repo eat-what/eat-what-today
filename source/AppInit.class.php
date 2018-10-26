@@ -8,6 +8,7 @@
 namespace EatWhat;
 
 use Whoops\Run;
+use EatWhat\EatWhatJwt;
 use EatWhat\EatWhatStatic;
 use EatWhat\EatWhatRequest;
 use EatWhat\Generator\Generator;
@@ -52,7 +53,7 @@ class AppInit
 		DEVELOPMODE && $this->setErrorDisplayAndHandle();
 
 		// create request
-		$this->request = new EatWhatRequest();
+		$this->request = new EatWhatRequest(new EatWhatJwt(null, null));
 
 		// verify user
 		$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
