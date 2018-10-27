@@ -23,7 +23,9 @@ class verifyAccessToken extends MiddlewareBase
         return function(EatWhatRequest $request, callable $next)
         {
             $analyzer = $request->getAccessTokenAnalyzer();
+            $userController = $request->getUserController();
             $verifyResult = $analyzer->verify();
+
             if(!$verifyResult) {
                 $extraErrorMessage = $analyzer->getExtraErrorMessage();
                 if( !DEVELOPMODE ) {
@@ -39,7 +41,7 @@ class verifyAccessToken extends MiddlewareBase
                     throw new EatWhatException("Illegality Access Token, Check it. ".$extraErrorMessage);
                 }
             } else {
-                $request->setUserData($verifyResult);
+                is_array($verifyResult) && ($userController->setUserData($verifyResult));
                 $next($request);
             }
         };

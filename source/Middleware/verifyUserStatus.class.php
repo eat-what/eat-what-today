@@ -24,13 +24,13 @@ class verifyUserStatus extends MiddlewareBase
     {
         return function(EatWhatRequest $request, callable $next) 
         {
-            $userData = $request->getUserData();
+            $userData = $request->getUserController()->getUserData();
             if(empty($userData)) {
-                $request->outputResult([
+                $request->outputRequestResult([
                     "login" => 1,
                 ]);
             } else if($userData["userStatus"] < 0) {
-                $request->outputResult([
+                $request->outputRequestResult([
                     "relogin" => 1,
                 ]);
             } else {

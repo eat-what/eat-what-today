@@ -49,9 +49,9 @@ class AppConfig
             $configFile = CONFIG_PATH."config_".$configType.".php";
             if( EatWhatStatic::checkFile($configFile) ) {
                 $requireConfig = require_once $configFile;
+                self::set($configType, $requireConfig);
                 if( isset($requireConfig[$configName]) ) {
                     $configValue = $requireConfig[$configName];
-                    self::set($configType, $requireConfig);
                     return $configValue;
                 }
             }

@@ -11,6 +11,7 @@ use Whoops\Run;
 use EatWhat\EatWhatJwt;
 use EatWhat\EatWhatStatic;
 use EatWhat\EatWhatRequest;
+use EatWhat\EatWhatContainer;
 use EatWhat\Generator\Generator;
 use Whoops\Handler\PrettyPageHandler;
 use EatWhat\Exceptions\EatWhatException;
@@ -52,8 +53,16 @@ class AppInit
 
 		DEVELOPMODE && $this->setErrorDisplayAndHandle();
 
+		$container = new EatWhatContainer;
+		$container->bind("EatWhatJwt", function(){
+			return new EatWhatJwt(null, null);
+		});
+		$container->bind("UserController", "EatWhat\Controller\UserController");
+
 		// create request
-		$this->request = new EatWhatRequest(new EatWhatJwt(null, null));
+		$this->request = new EatWhatRequest();
+		$this->request->setAccessTokenAnalyzer($container->make("EatWhatJwt"));
+		$this->request->setUserController($container->make("UserController"));
 
 		// verify user
 		$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));

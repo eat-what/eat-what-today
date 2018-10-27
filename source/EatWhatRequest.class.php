@@ -9,7 +9,6 @@ namespace EatWhat;
 
 use EatWhat\EatWhatStatic;
 use EatWhat\Exceptions\EatWhatException;
-use EatWhat\Controller\UserController;
 
 class EatWhatRequest
 {
@@ -50,13 +49,18 @@ class EatWhatRequest
     private $accessTokenAnalyzer;
 
     /**
+     * user data manager
+     * 
+     */
+    private $userController;
+
+    /**
      * route 
      * 
      */
-    public function __construct(EatWhatJwt $analyzer)
+    public function __construct()
     {
         $params = $_GET;
-        $this->setAccessTokenAnalyzer($analyzer);
         $this->setApi($_GET["api"] ?? "EatWhat");
         $this->setMethod($_GET["mtd"] ?? "EatWhat");
     }
@@ -92,27 +96,18 @@ class EatWhatRequest
      * set access token analyzer
      * 
      */
-    private function setAccessTokenAnalyzer(EatWhatJwt $analyzer)
+    public function setAccessTokenAnalyzer($analyzer)
     {
         $this->accessTokenAnalyzer = $analyzer;
     }
 
     /**
-     * set access token analyzer
+     * set user controller
      * 
      */
-    public function setUserData($userData)
+    public function setUserController($controller)
     {
-        $this->userData = $userData;
-    }
-
-    /**
-     * set user status
-     * 
-     */
-    public function setUserStatus($userStatus)
-    {
-        $this->userData && ($this->userData["userStatus"] = $userStatus);
+        $this->userController = $controller;
     }
 
     /**
@@ -145,21 +140,21 @@ class EatWhatRequest
     }
 
     /**
-     * get user data
-     * 
-     */
-    public function getUserData()
-    {
-        return $this->userData;
-    }
-
-    /**
      * get access token analyzer obj
      * 
      */
     public function getAccessTokenAnalyzer()
     {
         return $this->accessTokenAnalyzer;
+    }
+
+    /**
+     * get user controller
+     * 
+     */
+    public function getUserController()
+    {
+        return $this->userController;
     }
 
     /**
@@ -211,8 +206,8 @@ class EatWhatRequest
      * out put result with json format
      * 
      */
-    public function outputResult($result = [])
+    public function outputRequestResult($result = [])
     {
-        
+        print_r($result);
     }
 }

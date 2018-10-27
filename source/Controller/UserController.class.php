@@ -2,21 +2,44 @@
 
 namespace EatWhat\Controller;
 
+use EatWhat\Base\Controller;
+
 /**
  * user controller for request obj
  * 
  */
-class UserController
+class UserController extends Controller
 {
-    private $userData;
+    /**
+     * generate user date after verifing token
+     * 
+     */
+    private $userData = null;
 
-    public function getUserData() 
+    /**
+     * set access token analyzer
+     * 
+     */
+    public function setUserData($userData)
     {
-
+        $this->userData = $userData;
     }
 
-    public function setUserData() 
+    /**
+     * set user status
+     * 
+     */
+    public function setUserStatus($userStatus)
     {
+        $this->userData && ($this->userData["userStatus"] = $userStatus);
+    }
 
+    /**
+     * get user data
+     * 
+     */
+    public function getUserData()
+    {
+        return $this->userData;
     }
 }
