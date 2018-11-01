@@ -47,4 +47,12 @@ class ApiBase extends EatWhatBase
         //$this->redis = Generator::storage("storageClient", "Redis");
         //$this->mongodb = Generator::storage("storageClient", "Mongodb");
     }
+
+    /**
+     * output result
+     * 
+     */
+    public function outputResult($result) {
+        $this->request->outputResult($result);
+    }
 }

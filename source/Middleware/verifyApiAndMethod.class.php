@@ -40,12 +40,7 @@ class verifyApiAndMethod extends MiddlewareBase
                     throw new EatWhatException("Wrong Api or Method, Check it.");
                 }
             } else {
-                if($api == "User") {
-                    $verifyUserStatus = Generator::middleware("verifyUserStatus");
-                    $verifyUserStatus($request, $next);
-                } else {
-                    $next($request);
-                }
+                $next($request);
             }
         };
     }
