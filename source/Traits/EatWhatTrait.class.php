@@ -8,8 +8,8 @@ namespace EatWhat\Traits;
  */
 trait EatWhatTrait
 {
-    public function test()
+    public function default()
     {
-        var_dump(\EatWhat\EatWhatStatic::convertBase(4572, 62));
+        $this->outputResult("Hello EatWhat!");
     }
 }

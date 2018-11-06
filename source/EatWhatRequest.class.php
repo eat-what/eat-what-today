@@ -7,6 +7,7 @@
 
 namespace EatWhat;
 
+use Ramsey\Uuid\Uuid;
 use EatWhat\EatWhatStatic;
 use EatWhat\Exceptions\EatWhatException;
 
@@ -60,9 +61,9 @@ class EatWhatRequest
      */
     public function __construct()
     {
-        $params = $_GET;
         $this->setApi($_GET["api"] ?? "EatWhat");
         $this->setMethod($_GET["mtd"] ?? "EatWhat");
+        $this->setRequestId();
     }
 
     /**
@@ -111,6 +112,16 @@ class EatWhatRequest
     }
 
     /**
+     * set user controller
+     * 
+     */
+    public function setRequestId()
+    {
+        $requestId = Uuid::uuid5(Uuid::NAMESPACE_DNS, "eatwhat");
+        $this->requestId = $requestId->toString();
+    }
+
+    /**
      * get api args
      * 
      */
@@ -155,6 +166,15 @@ class EatWhatRequest
     public function getUserController()
     {
         return $this->userController;
+    }
+
+    /**
+     * get user controller
+     * 
+     */
+    public function getRequestId()
+    {
+        return $this->requestId;
     }
 
     /**
@@ -206,8 +226,18 @@ class EatWhatRequest
      * out put result with json format
      * 
      */
-    public function outputRequestResult($result = [])
+    public function outputResult($result)
     {
-        print_r($result);
+        $output = [];
+        $output["request_id"] = $this->getRequestId();
+        $output["result"] = $result;
+
+        $userData = $this->getUserController()->getUserData();
+        if(!empty($userData)) {
+            $output["user"] = $userData;
+        }
+
+        echo json_encode($output);
+        exit();
     }
 }

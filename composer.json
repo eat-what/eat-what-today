@@ -2,6 +2,7 @@
     "require": {
         "filp/whoops": "^2.2",
         "monolog/monolog": "^1.23",
-        "mongodb/mongodb": "^1.1"
+        "mongodb/mongodb": "^1.1",
+        "ramsey/uuid": "^3.8"
     }
 }

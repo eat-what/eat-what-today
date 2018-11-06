@@ -64,11 +64,11 @@ class AppInit
 		$this->request->setAccessTokenAnalyzer($container->make("EatWhatJwt"));
 		$this->request->setUserController($container->make("UserController"));
 
-		// verify user
-		$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
-
 		//verify api and method
 		$this->request->addMiddleWare(Generator::middleware("verifyApiAndMethod"));
+		
+		// verify user
+		$this->request->addMiddleWare(Generator::middleware("verifyAccessToken"));
 
 		//verify sign
 		if($this->initConfig["api_verify_sign"]) {
