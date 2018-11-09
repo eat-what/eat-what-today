@@ -15,7 +15,7 @@ class EatWhatBase
     public static function className($withoutNamespace = false)
     {
         $classname = get_called_class();
-        $withoutNamespace && ($classname = substr($classname, (strrpos($classname, "\\") + 1)));
+        $withoutNamespace && ($classname = basename($classname));
         return $classname;
     }
 }

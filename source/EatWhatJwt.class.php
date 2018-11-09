@@ -42,7 +42,7 @@ class EatWhatJwt
      * set algo
      * 
      */
-    private function setAlgo($algo)
+    private function setAlgo($algo = null)
     {
         $this->algo = $algo ?? "sha256";
     }
@@ -51,7 +51,7 @@ class EatWhatJwt
      * set cipher key
      * 
      */
-    private function setCipherKey($cipherKey)
+    private function setCipherKey($cipherKey = null)
     {
         $this->cipherKey = $cipherKey ?? AppConfig::get("cipher_key", "global");
     }

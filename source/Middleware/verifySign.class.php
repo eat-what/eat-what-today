@@ -30,6 +30,7 @@ class verifySign extends MiddlewareBase
                 if( !DEVELOPMODE ) {
                     EatWhatLog::logging("Illegality Request With Wrong Sinature.", [
                         "ip" => getenv("REMOTE_ADDR"),
+                        "request_id" => $request->getRequestId(),
                     ]);
                     EatWhatStatic::illegalRequestReturn();
                 } else {

@@ -34,6 +34,7 @@ class verifyApiAndMethod extends MiddlewareBase
                         "ip" => getenv("REMOTE_ADDR"),
                         "api" => $api,
                         "method" => $method,
+                        "request_id" => $request->getRequestId(),
                     ]);
                     EatWhatStatic::illegalRequestReturn();
                 } else {

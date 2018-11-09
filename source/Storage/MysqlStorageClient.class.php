@@ -19,14 +19,15 @@ class MysqlStorageClient extends StorageBase
     public static function getClient()
     {
         static::getStorageConfig();
-        $dsn = "mysql:dbname=".self::$config["dbname"].";host=".self::$config["host"];
+        $dsn = "mysql:dbname=".self::$config["dbname"].";host=".self::$config["host"].";charset=utf8";
         // get mysql obj
         try {
             $options = [
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 \PDO::ATTR_PERSISTENT => false,
-                \PDO::MYSQL_ATTR_INIT_COMMAND => "set names utf8",
-                \PDO::ATTR_TIMEOUT => self::$config["timeout"]
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "set names utf8mp4",
+                \PDO::ATTR_TIMEOUT => self::$config["timeout"],
+                \PDO::ATTR_EMULATE_PREPARES => false,
             ];
 
             $pdoClient = new \PDO($dsn, self::$config["dbuser"], self::$config["passwd"], $options);

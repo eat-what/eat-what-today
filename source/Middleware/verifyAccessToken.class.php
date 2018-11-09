@@ -32,6 +32,7 @@ class verifyAccessToken extends MiddlewareBase
                     EatWhatLog::logging("Illegality Access Token.", [
                         "ip" => getenv("REMOTE_ADDR"),
                         "extra_error_message" => $extraErrorMessage,
+                        "request_id" => $request->getRequestId(),
                     ],
                     "file",
                     "access_token.log"
