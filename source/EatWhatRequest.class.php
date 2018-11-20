@@ -9,6 +9,7 @@ namespace EatWhat;
 
 use Ramsey\Uuid\Uuid;
 use EatWhat\EatWhatStatic;
+use EatWhat\EatWhatContainer;
 use EatWhat\Exceptions\EatWhatException;
 
 class EatWhatRequest
@@ -54,6 +55,18 @@ class EatWhatRequest
      * 
      */
     private $userController;
+
+    /**
+     * request id
+     * 
+     */
+    public $requestId;
+
+    /**
+     * for static use
+     * 
+     */
+    public static $staticRequestId;
 
     /**
      * route 
@@ -119,6 +132,7 @@ class EatWhatRequest
     {
         $requestId = Uuid::uuid5(Uuid::NAMESPACE_DNS, "eatwhat");
         $this->requestId = $requestId->toString();
+        self::$staticRequestId = $this->requestId;
     }
 
     /**
@@ -211,13 +225,16 @@ class EatWhatRequest
      */
     public function call()
     {
+        $container = new EatWhatContainer;
+        $container->bind("EatWhatRequest", function(){return $this;});
+
         $instanceName = "EatWhat\\Api\\" . ucfirst($this->api) . "Api";
         if(class_exists($instanceName) && method_exists($instanceName, $this->method) && is_callable([$instanceName, $this->method])) {
             $methodObj = new \ReflectionMethod($instanceName, $this->method);
             if($methodObj->getParameters()) {
                 $this->getArgs();
             }
-            $api = new $instanceName($this);
+            $api = new $instanceName($container->make("EatWhatRequest"));
             call_user_func_array([$api, $this->method], $this->args);
         }
     }

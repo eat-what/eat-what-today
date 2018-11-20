@@ -63,6 +63,6 @@ class StorageClient
             self::$instance[strtolower($storageType)] = $storageHandlerName::getClient();
         } 
 
-        return self::$instance;
+        return self::$instance[strtolower($storageType)];
     }
 }

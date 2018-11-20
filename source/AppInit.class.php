@@ -39,6 +39,8 @@ class AppInit
 	{
 		$this->initConfig = $initConfig;
 
+		DEVELOPMODE && $this->setErrorDisplayAndHandle();
+
 		ob_start("ob_gzhandler");
 
 		session_start();
@@ -50,8 +52,6 @@ class AppInit
 		$this->initInput();
 
 		$this->setGlobal();
-
-		DEVELOPMODE && $this->setErrorDisplayAndHandle();
 
 		$container = new EatWhatContainer;
 		$container->bind("EatWhatJwt", function(){
@@ -160,6 +160,7 @@ class AppInit
 	public function initInput()
 	{
 		EatWhatStatic::checkPostMethod() && ($_GET = array_merge($_GET, $_POST));
+		EatWhatStatic::trimValue($_GET);
 	}
 
 	/**

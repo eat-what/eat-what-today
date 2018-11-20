@@ -116,7 +116,7 @@ EATWHAT;
      * multiple band and ascii convert by bit
      * 
      */
-    public static function numberToAscii($num)
+    public static function numberToAscii(int $num) : string
     {
         if($num >= 10 && $num <= 35) {
             $num = chr($num + 55);
@@ -124,5 +124,20 @@ EATWHAT;
             $num = chr($num + 61);
         }
         return $num;
+    }
+
+    /**
+     * trim value recursive
+     * 
+     */
+    public static function trimValue(array &$value) : void
+    {
+        foreach($value as &$v) {
+            if( is_array($v) ) {
+                self::trimValue($v);
+            } else {
+                $v = trim($v);
+            }
+        }
     }
 }

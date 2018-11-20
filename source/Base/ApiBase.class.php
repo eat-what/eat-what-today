@@ -4,7 +4,9 @@ namespace EatWhat\Base;
 
 use EatWhat\EatWhatRequest;
 use EatWhat\EatWhatBase;
+use EatWhat\AppConfig;
 use EatWhat\Generator\Generator;
+use EatWhat\Storage\Dao\MysqlDao;
 
 /**
  * Api Base
@@ -43,9 +45,9 @@ class ApiBase extends EatWhatBase
     public function __construct(EatWhatRequest $request)
     {
         $this->request = $request;
-        //$this->pdo = Generator::storage("storageClient", "Mysql");
-        //$this->redis = Generator::storage("storageClient", "Redis");
-        //$this->mongodb = Generator::storage("storageClient", "Mongodb");
+        $this->mysqlDao = new MysqlDao;
+        $this->redis = Generator::storage("storageClient", "Redis");
+        $this->mongodb = Generator::storage("storageClient", "Mongodb");
     }
 
     /**
@@ -54,5 +56,18 @@ class ApiBase extends EatWhatBase
      */
     public function outputResult($result) {
         $this->request->outputResult($result);
+    }
+
+    /**
+     * generate an array that includ a note and acode
+     * 
+     */
+    public function generateErrorResult(string $langName, int $code) : array
+    {
+        $result = [
+            "note" => AppConfig::get($langName, "lang"),
+            "code" => $code,
+        ];
+        return $result;
     }
 }
