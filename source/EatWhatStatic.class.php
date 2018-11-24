@@ -39,6 +39,15 @@ class EatWhatStatic
     }
 
     /**
+     * check post request
+     * 
+     */
+    public static function checkPost()
+    {
+        return self::checkPostMethod() && 1;
+    }
+
+    /**
      * check http method is post
      * 
      */
@@ -139,5 +148,30 @@ EATWHAT;
                 $v = trim($v);
             }
         }
+    }
+
+    /**
+     * emulate a async request
+     * 
+     */
+    public static function asyncRequestWithoutOutput($url)
+    {
+        $cwd = getcwd();
+        chdir("/tmp");
+        $cmd = "nohup curl -so /dev/null " . str_replace(["&", " "], ["\&", "%20"], addslashes($url)) . " 2>&1 &";
+        pclose(popen($cmd, "r"));
+        chdir($cwd);
+    }
+
+    /**
+     * check mobile format
+     * 
+     */
+    public static function checkMobileFormat(string $mobile) : bool
+    {
+        if( !preg_match("/^(13|14|15|16|18|17|19)[0-9]{9}$/", $mobile) ) {
+            return false;
+        }
+        return true;
     }
 }

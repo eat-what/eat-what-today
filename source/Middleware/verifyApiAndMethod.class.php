@@ -27,6 +27,7 @@ class verifyApiAndMethod extends MiddlewareBase
             $api = $request->getApi();
             $method = $request->getMethod();
             $legalApiAndMethod = AppConfig::get("legalApiAndMethod", "global");
+            $needLoginApiAndMethod = AppConfig::get("needLoginApiAndMethod", "global");
 
             if(!isset($legalApiAndMethod[$api]) || !in_array($method, $legalApiAndMethod[$api])) {
                 if( !DEVELOPMODE ) {
@@ -41,7 +42,13 @@ class verifyApiAndMethod extends MiddlewareBase
                     throw new EatWhatException("Wrong Api or Method, Check it.");
                 }
             } else {
-                $next($request);
+                // $next($request);
+                if(isset($needLoginApiAndMethod[$api]) && in_array($method, $needLoginApiAndMethod[$api])) {
+                    $verifyUserStatus = Generator::middleware("verifyUserStatus");
+                    $verifyUserStatus($request, $next);
+                } else {
+                    $next($request);
+                }
             }
         };
     }

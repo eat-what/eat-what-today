@@ -29,6 +29,12 @@ class EatWhatJwt
     private $extraErrorMsg;
 
     /**
+     * access token
+     * 
+     */
+    private $accessToken;
+
+    /**
      * Constructor!
      * 
      */
@@ -42,7 +48,7 @@ class EatWhatJwt
      * set algo
      * 
      */
-    private function setAlgo($algo = null)
+    private function setAlgo($algo = null) : void
     {
         $this->algo = $algo ?? "sha256";
     }
@@ -51,7 +57,7 @@ class EatWhatJwt
      * set cipher key
      * 
      */
-    private function setCipherKey($cipherKey = null)
+    private function setCipherKey($cipherKey = null) : void
     {
         $this->cipherKey = $cipherKey ?? AppConfig::get("cipher_key", "global");
     }
@@ -60,7 +66,7 @@ class EatWhatJwt
      * set cipher key
      * 
      */
-    public function getExtraErrorMessage()
+    public function getExtraErrorMessage() : ?string
     {
         return $this->extraErrorMsg;
     }
@@ -99,14 +105,16 @@ class EatWhatJwt
         // max size => 2048 / 8 - 11 = 245;
         $jwt = $data . "." . $signature;
 
-        $pri_key_pem_file = AppConfig::get("pri_key_pem_file", "global");
-        $pri_key = openssl_pkey_get_private($pri_key_pem_file);
-        if( !openssl_private_encrypt($jwt, $token, $pri_key) ) {
+        // $pri_key_pem_file = AppConfig::get("pri_key_pem_file", "global");
+        // $pri_key = openssl_pkey_get_private($pri_key_pem_file);
+        $key = $iv = substr($this->cipherKey, 0, 16);
+        if( !($token = openssl_encrypt($jwt, "AES-128-CBC", $key, OPENSSL_RAW_DATA, $iv)) ) {
             $this->setExtraErrorMessage(openssl_error_string());
             return false;
         }
 
-        return base64_encode($token);
+        $token = base64_encode($token);
+        return $token;
     }
 
     /**
@@ -125,9 +133,10 @@ class EatWhatJwt
             return false;
         }
 
-        $pub_key_pem_file = AppConfig::get("pub_key_pem_file", "global");
-        $pub_key = openssl_pkey_get_public($pub_key_pem_file);
-        if(!openssl_public_decrypt(base64_decode($token), $jwt, $pub_key)) {
+        // $pub_key_pem_file = AppConfig::get("pub_key_pem_file", "global");
+        // $pub_key = openssl_pkey_get_public($pub_key_pem_file);
+        $key = $iv = substr($this->cipherKey, 0, 16);
+        if(!($jwt = openssl_decrypt(base64_decode($token), "AES-128-CBC", $key, OPENSSL_RAW_DATA, $iv))) {
             $this->setExtraErrorMessage("Openssl Decrypt Fail: ".openssl_error_string());
             return false;
         }
@@ -146,13 +155,16 @@ class EatWhatJwt
             return false;
         }
 
-        $jwtPayload["data"]["userStatus"] = 1;
+        $jwtPayload["data"]["tokenStatus"] = 1;
 
-        // expire
+        // expired
         if($jwtPayload["exp"] <= $_SERVER["REQUEST_TIME"]) {
-            $jwtPayload["data"]["userStatus"] = -1;
+            $jwtPayload["data"]["tokenStatus"] = -401;
         }
 
-        return $jwtPayload["data"];
+        return [
+            "data" => $jwtPayload["data"],
+            "token" => $token,
+        ];
     }
 }

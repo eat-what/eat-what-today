@@ -26,13 +26,9 @@ class verifyUserStatus extends MiddlewareBase
         {
             $userData = $request->getUserController()->getUserData();
             if(empty($userData)) {
-                $request->outputRequestResult([
-                    "login" => 1,
-                ]);
-            } else if($userData["userStatus"] < 0) {
-                $request->outputRequestResult([
-                    "relogin" => 1,
-                ]);
+                $request->outputResult($request->generateStatusResult("actionWithLogIn", -400));
+            } else if($userData["tokenStatus"] == -401) {
+                $request->outputResult($request->generateStatusResult("loginStatusHasExpired", -401));
             } else {
                 $next($request);
             }

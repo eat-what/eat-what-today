@@ -7,6 +7,7 @@
 
 namespace EatWhat;
 
+use EatWhat\AppConfig;
 use Ramsey\Uuid\Uuid;
 use EatWhat\EatWhatStatic;
 use EatWhat\EatWhatContainer;
@@ -192,6 +193,15 @@ class EatWhatRequest
     }
 
     /**
+     * get user data
+     * 
+     */
+    public function getUserData()
+    {
+        return $this->getUserController()->getUserData();
+    }
+
+    /**
      * add a request filter
      * 
      */
@@ -240,6 +250,21 @@ class EatWhatRequest
     }
 
     /**
+     * generate an array that includ a note and acode
+     * 
+     */
+    public function generateStatusResult(string $langName, int $code, bool $isLang = true) : array
+    {
+        $result = [
+            "status" => [
+                "note" => $isLang ? AppConfig::get($langName, "lang") : $langName,
+                "code" => $code,
+            ],
+        ];
+        return $result;
+    }
+
+    /**
      * out put result with json format
      * 
      */
@@ -247,11 +272,12 @@ class EatWhatRequest
     {
         $output = [];
         $output["request_id"] = $this->getRequestId();
+        $output["auth_token"] = $this->getUserController()->getAccessToken();
         $output["result"] = $result;
 
         $userData = $this->getUserController()->getUserData();
         if(!empty($userData)) {
-            $output["user"] = $userData;
+            $output["result"]["user"] = $userData;
         }
 
         header("Content-Type: application/json;charset=utf-8");

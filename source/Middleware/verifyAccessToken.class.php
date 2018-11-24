@@ -42,7 +42,10 @@ class verifyAccessToken extends MiddlewareBase
                     throw new EatWhatException("Illegality Access Token, Check it. ".$extraErrorMessage);
                 }
             } else {
-                is_array($verifyResult) && ($userController->setUserData($verifyResult));
+                if(is_array($verifyResult)) {
+                    $userController->setUserData($verifyResult["data"]);
+                    $userController->setAccessToken($verifyResult["token"]);
+                }   
                 $next($request);
             }
         };

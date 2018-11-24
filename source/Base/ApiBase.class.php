@@ -5,6 +5,7 @@ namespace EatWhat\Base;
 use EatWhat\EatWhatRequest;
 use EatWhat\EatWhatBase;
 use EatWhat\AppConfig;
+use EatWhat\EatWhatStatic;
 use EatWhat\Generator\Generator;
 use EatWhat\Storage\Dao\MysqlDao;
 
@@ -45,7 +46,8 @@ class ApiBase extends EatWhatBase
     public function __construct(EatWhatRequest $request)
     {
         $this->request = $request;
-        $this->mysqlDao = new MysqlDao;
+        $this->userData = $request->getUserData();
+        $this->mysqlDao = new MysqlDao($request);
         $this->redis = Generator::storage("storageClient", "Redis");
         $this->mongodb = Generator::storage("storageClient", "Mongodb");
     }
@@ -62,12 +64,19 @@ class ApiBase extends EatWhatBase
      * generate an array that includ a note and acode
      * 
      */
-    public function generateErrorResult(string $langName, int $code) : array
+    public function generateStatusResult(string $langName, int $code, bool $isLang = true) : array
     {
-        $result = [
-            "note" => AppConfig::get($langName, "lang"),
-            "code" => $code,
-        ];
-        return $result;
+        return $this->request->generateStatusResult($langName, $code, $isLang);
+    }
+
+    /**
+     * check post request
+     * 
+     */
+    public function checkPost() : void
+    {
+        if( !EatWhatStatic::checkPost() ) {
+            $this->outputResult($this->generateStatusResult("illegalRequest", -1));
+        }
     }
 }
