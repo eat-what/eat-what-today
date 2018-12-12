@@ -58,6 +58,12 @@ class EatWhatRequest
     private $userController;
 
     /**
+     * request status
+     * 
+     */
+    private $requestStatus;
+
+    /**
      * request id
      * 
      */
@@ -108,6 +114,15 @@ class EatWhatRequest
     }
 
     /**
+     * set method
+     * 
+     */
+    private function setRequestStatus($status)
+    {   
+        $this->requestStatus = $status;
+    }
+
+    /**
      * set access token analyzer
      * 
      */
@@ -131,7 +146,8 @@ class EatWhatRequest
      */
     public function setRequestId()
     {
-        $requestId = Uuid::uuid5(Uuid::NAMESPACE_DNS, "eatwhat");
+        // $requestId = Uuid::uuid5(Uuid::NAMESPACE_DNS, "eatwhat");
+        $requestId = Uuid::uuid4();
         $this->requestId = $requestId->toString();
         self::$staticRequestId = $this->requestId;
     }
@@ -190,6 +206,15 @@ class EatWhatRequest
     public function getRequestId()
     {
         return $this->requestId;
+    }
+
+    /**
+     * get user controller
+     * 
+     */
+    public function getRequestStatus()
+    {
+        return $this->requestStatus;
     }
 
     /**
@@ -256,11 +281,13 @@ class EatWhatRequest
     public function generateStatusResult(string $langName, int $code, bool $isLang = true) : array
     {
         $result = [
-            "status" => [
-                "note" => $isLang ? AppConfig::get($langName, "lang") : $langName,
-                "code" => $code,
-            ],
+            "note" => $isLang ? AppConfig::get($langName, "lang") : $langName,
+            "code" => $code,
         ];
+        $this->setRequestStatus($result);
+
+        ($code < 0) && ($this->outputResult());
+
         return $result;
     }
 
@@ -268,17 +295,19 @@ class EatWhatRequest
      * out put result with json format
      * 
      */
-    public function outputResult($result)
+    public function outputResult($result = []) : void
     {
         $output = [];
         $output["request_id"] = $this->getRequestId();
         $output["auth_token"] = $this->getUserController()->getAccessToken();
-        $output["result"] = $result;
+        $output["status"] = $this->getRequestStatus();
 
         $userData = $this->getUserController()->getUserData();
-        if(!empty($userData)) {
-            $output["result"]["user"] = $userData;
+        if(!empty($userData) && !in_array($output["status"]["code"], array_values(AppConfig::get("global_status", "global")))) {
+            $output["user"] = $userData;
         }
+
+        $output["result"] = $result;
 
         header("Content-Type: application/json;charset=utf-8");
         echo json_encode($output);

@@ -19,7 +19,7 @@ class MysqlStorageClient extends StorageBase
     public static function getClient()
     {
         static::getStorageConfig();
-        $dsn = "mysql:dbname=".self::$config["dbname"].";host=".self::$config["host"].";charset=utf8";
+        $dsn = "mysql:dbname=" . self::$config["dbname"] . ";host=" . self::$config["host"] . ";charset=utf8";
         // get mysql obj
         try {
             $options = [

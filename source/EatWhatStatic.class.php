@@ -174,4 +174,87 @@ EATWHAT;
         }
         return true;
     }
+
+    /**
+     * get url qrcode
+     * 
+     */
+    public static function getUrlQrcode(string $url) : void
+    {
+        require_once LIB_PATH . "phpqrcode.php";
+        \QRcode::png($url);
+    }
+
+    /**
+     * get random number/char
+     * 
+     */
+    public static function getRandom(int $count, string $type = "number") : string
+    {
+        $random = "";
+        if($type == "number") {
+            for($i = 0;$i < $count;$i++) {
+                $random .= mt_rand(1,9);
+            }
+        } else if($type == "char") {
+            $baseString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            $random = substr(str_shuffle($baseString), 0, $count);
+        }
+
+        return $random;
+    }
+
+    /**
+     * get period timestamp
+     * 
+     */
+    public static function getPeriodTimestamp(int $days, string $op = "sub") : int
+    {
+        if($days == 0) return 0;
+
+        $date = new \DateTime();
+        $date->{$op}(new \DateInterval("P".$days."D"));
+        $timestamp = $date->getTimestamp();
+        
+        return $timestamp;
+    }
+
+    /**
+     * check url format
+     * 
+     */
+    public static function checkUrlFormat(string $url) : bool
+    {
+        return boolval(preg_match("/^(https?:\/\/)?([\w-_\+]+\.)+.*\/?$/i", $url));
+    }
+
+    /**
+     * base64 encode
+     * 
+     */
+    public static function base64encode(string $string, bool $safe = false) : string
+    {
+        $code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        $encode = "";
+        
+        $chunks = str_split($string, 3);
+        foreach($chunks as $chunk) {
+            $group = "";
+            for($i = 0;$i < strlen($chunk);$i++) {
+                $group .= sprintf("%08s", decbin(ord($chunk{$i})));
+            }
+    
+            $encode .= implode("", array_map(function($v) use($code){
+                if(strlen($v) == 6) {
+                    return $code{bindec("00" . $v)};
+                } else if(strlen($v) == 4) {
+                    return $code{bindec("00" . $v . "00")};
+                } else if(strlen($v) == 2) {
+                    return $code{bindec("00" . $v . "0000")};
+                }
+            },str_split($group, 6))) . str_repeat("=", strlen($group) % 3);
+        }
+    
+        return $safe ? str_replace(["+", "/"], ["-", "_"], $encode) : $encode;
+    }
 }

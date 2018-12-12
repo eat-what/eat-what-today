@@ -23,12 +23,21 @@ class UserController extends Controller
     private $accessToken = null;
 
     /**
-     * set access token analyzer
+     * set user data
      * 
      */
-    public function setUserData(?array $userData)
+    public function setUserData(?array $userData) : void
     {
         $this->userData = $userData;
+    }
+
+    /**
+     * set user data field
+     * 
+     */
+    public function setUserField(string $field, $value) : void
+    {
+        $this->userData[$field] = $value;
     }
 
     /**

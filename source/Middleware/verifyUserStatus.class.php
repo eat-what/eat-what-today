@@ -25,10 +25,13 @@ class verifyUserStatus extends MiddlewareBase
         return function(EatWhatRequest $request, callable $next) 
         {
             $userData = $request->getUserController()->getUserData();
-            if(empty($userData)) {
-                $request->outputResult($request->generateStatusResult("actionWithLogIn", -400));
+            if(empty($userData) || ($request->getApi() != "Manage" && $userData["tokenType"] == "manage")) {
+                $request->generateStatusResult("actionWithLogIn", -400);
             } else if($userData["tokenStatus"] == -401) {
-                $request->outputResult($request->generateStatusResult("loginStatusHasExpired", -401));
+                $request->generateStatusResult("loginStatusHasExpired", -401);
+            } else if($request->getApi() == "Manage") {
+                $verifyManageGroup = Generator::middleware("verifyManageGroup");
+                $verifyManageGroup($request, $next);
             } else {
                 $next($request);
             }

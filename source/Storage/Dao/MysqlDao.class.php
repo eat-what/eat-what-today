@@ -15,15 +15,6 @@ use EatWhat\EatWhatLog;
 class MysqlDao
 {
     /**
-     * bind vlaue type
-     * 
-     */
-    public $bindTypes = [
-        "integer" => \PDO::PARAM_INT,
-        "string" => \PDO::PARAM_STR,
-    ];
-
-    /**
      * mysql obj
      * 
      */
@@ -78,12 +69,22 @@ class MysqlDao
     public $execResult;
 
     /**
+     * bind vlaue type
+     * 
+     */
+    public $bindTypes = [
+        "integer" => \PDO::PARAM_INT,
+        "string" => \PDO::PARAM_STR,
+    ];
+
+    /**
      * constructor!
      * 
      */
     public function __construct(EatWhatRequest $request)
     {
         $this->request = $request;
+        $this->prefix = (AppConfig::get("MysqlStorageClient", "storage"))["prefix"];
         $this->pdo = Generator::storage("storageClient", "Mysql");
     }
 
@@ -112,7 +113,7 @@ class MysqlDao
      */
     public function table(string $tableName) : self
     {
-        $this->table = (AppConfig::get("MysqlStorageClient", "storage"))["prefix"] . $tableName;
+        $this->table = $this->prefix . $tableName;
 
         return $this;
     }
@@ -169,11 +170,148 @@ class MysqlDao
 
         $this->executeSql .= " WHERE";
         foreach($where as $value) {
-            $this->executeSql .= " $value = ? AND";
+            if(!is_array($value)) {
+                $this->executeSql .= " $value = ? AND";
+            } else {
+                list($field, $operator) = $value;
+                if(in_array($operator, ["<", ">", ">=", "<=", "<>", "=", "!="])) {
+                    $this->executeSql .= " " . $field . " " . $operator . " ? AND";
+                }
+            }
         }
-        $this->executeSql = substr($this->executeSql, 0, -3);
+        $this->executeSql = substr($this->executeSql, 0, -4);
 
         return $this;
+    }
+
+    /**
+     * in section
+     * 
+     */
+    public function in(string $field, int $inNum) : self
+    {
+        if(stripos($this->executeSql, "where") !== false) {
+            $this->executeSql .= " " . $field . " in (" . str_repeat("?,", $inNum) . ")";
+        } else {
+            $this->executeSql .= " where " . $field . " in (" . substr(str_repeat("?,", $inNum), 0, -1) . ")";
+        }
+
+        return $this;
+    }
+
+    /**
+     * ensure orderby section
+     * ["foo" => -1, "bar" => 1]
+     * 
+     */
+    public function orderBy(array $orderBy) : self
+    {
+        foreach($orderBy as $field => $sort) {
+            $this->executeSql .= " ORDER BY " . $field . " " . ($sort == -1 ? "DESC" : "ASC") . ",";
+        }
+        $this->executeSql = substr($this->executeSql, 0, -1);
+
+        return $this;
+    }
+
+    /**
+     * ensure limit section
+     * 
+     */
+    public function limit($page, $num) : self 
+    {
+        $this->executeSql .= " LIMIT " . ($page - 1) * $num . ",$num";
+
+        return $this;
+    }
+
+    /**
+     * ensure delete section
+     * 
+     */
+    public function delete() : self
+    {
+        $this->executeSql .= "DELETE FROM " . $this->table;
+
+        return $this;
+    }
+
+    /**
+     * left join
+     * 
+     */
+    public function leftJoin(string $tableName, ?string $alias = null) : self
+    {
+        $this->executeSql .= " LEFT JOIN " . $this->prefix . $tableName . ($alias ? " AS $alias" : "");
+
+        return $this;
+    }
+
+    /**
+     * as section
+     * 
+     */
+    public function alias($alias) : self
+    {
+        $this->executeSql .= " AS $alias";
+
+        return $this;
+    }
+
+    /**
+     * on for join
+     * 
+     */
+    public function on($onsql) : self 
+    {
+        $this->executeSql .= " ON $onsql";
+
+        return $this;
+    }
+
+    /**
+     * begin a transaction
+     * 
+     */
+    public function beginTransaction() : self
+    {
+        $this->pdo->beginTransaction();
+        $this->pdo->hasTransaction = true;
+
+        return $this;
+    }
+
+    /**
+     * commit a transaction
+     * 
+     */
+    public function commit() : self
+    {
+        $this->pdo->commit();
+        $this->pdo->hasTransaction = false;
+
+        return $this;
+    }
+
+    /**
+     * commit a transaction
+     * 
+     */
+    public function rollback() : self
+    {
+        $this->pdo->rollback();
+        $this->pdo->hasTransaction = false;
+
+        return $this;
+    }
+
+    /**
+     * get last insert id
+     * 
+     */
+    public function getLastInsertId() : string
+    {
+        return $this->pdo->lastInsertId();
     }
 
     /**
@@ -194,7 +332,8 @@ class MysqlDao
                 ], "file", "pdo.log");
 
                 $this->pdoException = true;
-                $this->request->outputResult($this->request->generateStatusResult("serverError", -404));
+                $this->request->generateStatusResult("serverError", -404);
+                $this->request->outputResult();
             } else {
                 throw new EatWhatException((string)$exception);
             }
@@ -207,7 +346,7 @@ class MysqlDao
      * execute plan
      * 
      */
-    public function execute(array $parameters = [])
+    public function execute(array $parameters = [], ?array $fetch = null)
     {
         if( isset($this->pdoStatment) ) {
             $placeholdersCount = preg_match_all("/\?/", $this->getExecuteSql()); 
@@ -221,12 +360,23 @@ class MysqlDao
                     $this->pdoStatment->bindValue($index + 1, $parameter, $this->bindTypes[$parameterType]);
                 }
                 $execResult = $this->pdoStatment->execute();
+                if(!$execResult && $this->hasTransaction) {
+                    $this->pdo->rollBack();
+                    $this->hasTransaction = false;
+                }
                 $this->execResult = $execResult;
                 $this->setExecuteSql();
-                return $this->pdoStatment;
+
+                if($fetch) {
+                    list($fetchName,$fetchType) = $fetch;
+                    return $this->pdoStatment->{$fetchName}($fetchType);
+                } else {
+                    return $this->pdoStatment;
+                } 
             } catch (\PDOException $exception) {
                 if($this->hasTransaction) {
                     $this->pdo->rollBack();
+                    $this->hasTransaction = false;
                 }
 
                 if( !DEVELOPMODE ) {
@@ -236,20 +386,12 @@ class MysqlDao
                     ], "file", "pdo.log");
 
                     $this->pdoException = true;
-                    $this->request->outputResult($this->request->generateStatusResult("serverError", -404));
+                    $this->request->generateStatusResult("serverError", -404);
+                    $this->request->outputResult();
                 } else {
                     throw new EatWhatException((string)$exception);
                 }
             }
         }
-    }
-
-    /**
-     * get last insert id
-     * 
-     */
-    public function getLastInsertId() : string
-    {
-        return $this->pdo->lastInsertId();
     }
 }
