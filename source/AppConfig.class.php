@@ -40,11 +40,10 @@ class AppConfig
      * get specific config
      *
      */
-    public static function get($configName, $configType = "global")
+    public static function get($configName, $configType = "global", ?string $subName = null)
     {
         if( isset(self::$loadedConfig[$configType][$configName]) ) {
             $configValue = self::$loadedConfig[$configType][$configName];
-            return $configValue;
         } else {
             $configFile = CONFIG_PATH."config_".$configType.".php";
             if( EatWhatStatic::checkFile($configFile) ) {
@@ -52,8 +51,15 @@ class AppConfig
                 self::set($configType, $requireConfig);
                 if( isset($requireConfig[$configName]) ) {
                     $configValue = $requireConfig[$configName];
-                    return $configValue;
                 }
+            }
+        }
+
+        if(isset($configValue)) {
+            if(!is_null($subName) && $configValue[$subName]) {
+                return $configValue[$subName];
+            } else {
+                return $configValue;
             }
         }
 

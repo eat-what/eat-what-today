@@ -5,6 +5,9 @@ define("SOURCE_PATH", __DIR__.DS."source".DS);
 define("CONFIG_PATH", __DIR__.DS."config".DS);
 define("VENDOR_PATH", __DIR__.DS."vendor".DS);
 define("LOG_PATH", __DIR__.DS."log".DS);
+define("ATTACH_PATH", __DIR__.DS."attachment".DS);
+define("LIB_PATH", __DIR__.DS."lib".DS);
+define("SDK_PATH", __DIR__.DS."sdk".DS);
 
 $initConfig = require_once CONFIG_PATH."config_init.php";
 define("DEVELOPMODE", $initConfig["developement"]);

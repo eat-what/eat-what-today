@@ -26,8 +26,8 @@ class verifyApiAndMethod extends MiddlewareBase
         {
             $api = $request->getApi();
             $method = $request->getMethod();
-            $legalApiAndMethod = AppConfig::get("legalApiAndMethod", "global");
-            $needLoginApiAndMethod = AppConfig::get("needLoginApiAndMethod", "global");
+            $legalApiAndMethod = AppConfig::get("legalApiAndMethod", "api");
+            $needLoginApiAndMethod = AppConfig::get("needLoginApiAndMethod", "api");
 
             if(!isset($legalApiAndMethod[$api]) || !in_array($method, $legalApiAndMethod[$api])) {
                 if( !DEVELOPMODE ) {

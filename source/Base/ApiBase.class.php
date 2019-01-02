@@ -71,6 +71,9 @@ class ApiBase extends EatWhatBase
      * 
      */
     public function outputResult($result = []) {
+        $newMessage = (int)$this->checkUserHasNewMessage($this->uid);
+        $this->request->getUserController()->setUserField("new_message", $newMessage);
+
         $this->request->outputResult($result);
     }
 
@@ -91,57 +94,6 @@ class ApiBase extends EatWhatBase
     {
         if( !EatWhatStatic::checkPost() ) {
             $this->generateStatusResult("illegalRequest", -1);
-        }
-    }
-
-    /**
-     * check request parameters
-     * 
-     */
-    public function checkParameters(array $options) : void
-    {
-        foreach($options as $option => $types) {
-            if(!isset($_GET[$option]) && !isset($_FILES[$option])) {
-                $this->generateStatusResult("parameterError", -1);  
-            } else if(!is_null($types)) {
-                !is_array($types) && ($types = (array)$types);
-                foreach($types as $type) {
-                    switch($type) {
-                        case "float":
-                        if(!$this->checkFloat($_GET[$option])) {
-                            $this->generateStatusResult("parameterError", -1);
-                        }
-                        break;
-    
-                        case "int":
-                        if(!$this->checkInt($_GET[$option])) {
-                            $this->generateStatusResult("parameterError", -1);
-                        }
-                        break;
-    
-                        case "array_int":
-                        foreach($_GET[$option] as $value) {
-                            if(!$this->checkInt($value)) {
-                                $this->generateStatusResult("parameterError", -1);
-                            }
-                        }
-                        break;
-    
-                        case "array_float":
-                        foreach($_GET[$option] as $value) {
-                            if(!$this->checkFloat($value)) {
-                                $this->generateStatusResult("parameterError", -1);
-                            }
-                        }
-                        break;
-
-                        case "nonzero":
-                        if($_GET[$option] == 0) {
-                            $this->generateStatusResult("parameterError", -1);
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -188,5 +140,105 @@ class ApiBase extends EatWhatBase
     public function setSetting(string $key, string $value)
     {
         $this->mongodb->setting->insertOne(extract("key", "value"));
+    }
+
+    /**
+     * begin a transaction
+     * 
+     */
+    public function beginTransaction() : void
+    {
+        $this->mysqlDao->beginTransaction();
+    }
+
+    /**
+     * commit a transaction
+     * 
+     */
+    public function commit() : void
+    {
+        $this->mysqlDao->commit();
+    }
+
+    /**
+     * rollback a transaction
+     * 
+     */
+    public function rollback() : void
+    {
+        $this->mysqlDao->rollback();
+    }
+
+    /**
+     * check request parameters
+     * 
+     */
+    public function checkParameters(array $options) : void
+    {
+        foreach($options as $option => $types) {
+            if(!isset($_GET[$option]) && !isset($_FILES[$option])) {
+                $this->generateStatusResult("parameterError", -1);  
+            } else if(!is_null($types)) {
+                !is_array($types) && ($types = (array)$types);
+                foreach($types as $type) {
+                    if(is_array($type)) {
+                        if(!in_array($_GET[$option], $type)) {
+                            $this->generateStatusResult("parameterError", -1);
+                        }
+                    } else {
+                        switch($type) {
+                            case "float":
+                            if(!$this->checkFloat($_GET[$option])) {
+                                $this->generateStatusResult("parameterError", -1);
+                            }
+                            break;
+        
+                            case "int":
+                            if(!$this->checkInt($_GET[$option])) {
+                                $this->generateStatusResult("parameterError", -1);
+                            }
+                            break;
+        
+                            case "array_int":
+                            foreach($_GET[$option] as $value) {
+                                if(!$this->checkInt($value)) {
+                                    $this->generateStatusResult("parameterError", -1);
+                                }
+                            }
+                            break;
+        
+                            case "array_float":
+                            foreach($_GET[$option] as $value) {
+                                if(!$this->checkFloat($value)) {
+                                    $this->generateStatusResult("parameterError", -1);
+                                }
+                            }
+                            break;
+    
+                            case "nonzero":
+                            if($_GET[$option] == 0) {
+                                $this->generateStatusResult("parameterError", -1);
+                            }
+                            break;
+    
+                            case "array_nonzero":
+                            foreach($_GET[$option] as $value) {
+                                if($value == 0) {
+                                    $this->generateStatusResult("parameterError", -1);
+                                }
+                            }
+                            break;
+
+                            case "json":
+                            $_GET[$option] = json_decode($_GET[$option], true);
+                            if(!$_GET[$option]) {
+                                $this->generateStatusResult("parameterError", -1);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

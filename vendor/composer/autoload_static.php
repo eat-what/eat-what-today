@@ -31,6 +31,7 @@ class ComposerStaticInitac1d17bf0e57776e746577fbac25eb2b
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Pingpp\\' => 7,
         ),
         'O' => 
         array (
@@ -73,6 +74,10 @@ class ComposerStaticInitac1d17bf0e57776e746577fbac25eb2b
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Pingpp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pingplusplus/pingpp-php/lib',
         ),
         'Overtrue\\Pinyin\\' => 
         array (

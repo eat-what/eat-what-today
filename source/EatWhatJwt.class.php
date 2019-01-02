@@ -3,6 +3,7 @@
 namespace EatWhat;
 
 use EatWhat\AppConfig;
+use EatWhat\EatWhatStatic;
 
 /**
  * simple jwt generate/verify
@@ -123,7 +124,7 @@ class EatWhatJwt
      */
     public function verify()
     {
-        $headers = getallheaders();
+        $headers = EatWhatStatic::getallheaders();
         if(!isset($headers["Authorization"]))
             return true;
 

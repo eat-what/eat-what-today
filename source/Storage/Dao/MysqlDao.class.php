@@ -69,6 +69,18 @@ class MysqlDao
     public $execResult;
 
     /**
+     * not interrput program when exception occurate
+     *
+     */
+    public $exceptionNotInterrupt = false;
+
+    /**
+     * set it to true if there were an error 
+     *
+     */
+    public $errorBefore = false;
+
+    /**
      * bind vlaue type
      * 
      */
@@ -215,6 +227,17 @@ class MysqlDao
     }
 
     /**
+     * ensure groupby section
+     * 
+     */
+    public function groupBy(string $field) : self
+    {
+        $this->executeSql .= " GROUP BY $field";
+
+        return $this;
+    }
+
+    /**
      * ensure limit section
      * 
      */
@@ -276,7 +299,7 @@ class MysqlDao
     public function beginTransaction() : self
     {
         $this->pdo->beginTransaction();
-        $this->pdo->hasTransaction = true;
+        $this->hasTransaction = true;
 
         return $this;
     }
@@ -288,7 +311,7 @@ class MysqlDao
     public function commit() : self
     {
         $this->pdo->commit();
-        $this->pdo->hasTransaction = false;
+        $this->hasTransaction = false;
 
         return $this;
     }
@@ -300,7 +323,7 @@ class MysqlDao
     public function rollback() : self
     {
         $this->pdo->rollback();
-        $this->pdo->hasTransaction = false;
+        $this->hasTransaction = false;
 
         return $this;
     }
@@ -325,6 +348,12 @@ class MysqlDao
                 \PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL,
             ]);
         } catch( \PDOException $exception ) {
+            $this->execResult = false;
+            if($this->exceptionNotInterrupt) {
+                $this->errorBefore = true;
+                return $this;
+            }
+
             if( !DEVELOPMODE ) {
                 EatWhatLog::logging("DB can not prepare sql: " . (string)$exception . ". ", [
                     "request_id" => $this->request->getRequestId(),
@@ -368,12 +397,21 @@ class MysqlDao
                 $this->setExecuteSql();
 
                 if($fetch) {
-                    list($fetchName,$fetchType) = $fetch;
-                    return $this->pdoStatment->{$fetchName}($fetchType);
+                    list($fetchName, $fetchArgs) = $fetch;
+                    if( !is_array($fetchArgs) ) {
+                        $fetchArgs = (array)$fetchArgs;
+                    }
+                    return call_user_func_array([$this->pdoStatment, $fetchName], $fetchArgs);
                 } else {
                     return $this->pdoStatment;
                 } 
             } catch (\PDOException $exception) {
+                $this->execResult = false;
+                if($this->exceptionNotInterrupt) {
+                    $this->errorBefore = true;
+                    return $this->execResult;
+                }
+
                 if($this->hasTransaction) {
                     $this->pdo->rollBack();
                     $this->hasTransaction = false;

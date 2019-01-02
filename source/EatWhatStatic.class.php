@@ -97,6 +97,7 @@ class EatWhatStatic
 |       \___|\__,_|\__|     \_/\_/ |_| |_|\__,_|\__|        |
 |                                                           | 
 ------------------------------------------------------------
+                Oop! Some Thing Wrong.
 EATWHAT;
         http_response_code(500);
         exit($output);
@@ -182,7 +183,7 @@ EATWHAT;
     public static function getUrlQrcode(string $url) : void
     {
         require_once LIB_PATH . "phpqrcode.php";
-        \QRcode::png($url);
+        \QRcode::png($url, false, QR_ECLEVEL_L, 4, 6);
     }
 
     /**
@@ -212,7 +213,7 @@ EATWHAT;
     {
         if($days == 0) return 0;
 
-        $date = new \DateTime();
+        $date = new \DateTime(date("Y-m-d"));
         $date->{$op}(new \DateInterval("P".$days."D"));
         $timestamp = $date->getTimestamp();
         
@@ -256,5 +257,27 @@ EATWHAT;
         }
     
         return $safe ? str_replace(["+", "/"], ["-", "_"], $encode) : $encode;
+    }
+
+    /**
+     * get all headers
+     * 
+     */
+    public static function getallheaders() : array
+    {
+        if( !function_exists("getallheaders")) {
+            $getheaders = function() {
+                $headers = [];
+                foreach ($_SERVER as $name => $value) { 
+                    if (substr($name, 0, 5) == 'HTTP_') { 
+                        $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value; 
+                    } 
+                } 
+                return $headers;
+            };
+            return $getheaders();
+        } else {
+            return getallheaders();
+        }
     }
 }

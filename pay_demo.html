@@ -1,0 +1,48 @@
+<script type="text/javascript" src="./pingpp-js-master/dist/pingpp_ui.js"></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<button id="pay_channel" onclick="doMobilePay()">click</button>
+<script type="text/javascript">
+
+    function doMobilePay()
+    {
+        pingpp_ui.init({
+            // 页面上需要展示的渠道，数组，数组顺序即页面展示出的渠道的顺序
+            // upmp_wap 渠道在微信内部无法使用，若用户未安装银联手机支付控件，则无法调起支付
+            channel:['alipay_wap','wx_wap']
+        },function(channel){
+            // 用户选择的支付渠道
+            var url = 'http://localhost/shop-srv-api/eatwhat.php?api=pay&mtd=InitiatePayTest';
+            jQuery.ajax({
+                'url' : url,
+                'type' : 'post',
+                'dataType' : 'json',
+                'data' : {
+                    'order_no': '2018122600001315',
+                },
+                success : function(response){
+                    console.log(response);
+
+                    // pingpp.setUrlReturnCallback(function (err, url) {
+                    //   // window.location.href = url;
+                    //   console.log(url);
+                    // }, ['alipay_pc_direct', 'alipay_wap']);
+
+                    pingpp_ui.createPayment(response, function(res, err) {
+                         // object 需是 Charge/Order/Recharge 的 JSON 字符串
+                         // 可按需使用 alert 方法弹出 log
+                        console.log(result);
+                        console.log(err.msg);
+                        console.log(err.extra);
+                        if (result == "success") {
+                            // 只有微信公众号 (wx_pub)、QQ 公众号 (qpay_pub)支付成功的结果会在这里返回，其他的支付结果都会跳转到 extra 中对应的 URL
+                        } else if (result == "fail") {
+                            // Ping++ 对象不正确或者微信公众号 / QQ公众号支付失败时会在此处返回
+                        } else if (result == "cancel") {
+                            // 微信公众号支付取消支付
+                        }
+                    });
+                }
+            });
+        });
+    }
+</script>

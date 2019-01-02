@@ -11,6 +11,7 @@ return array(
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
+    'Pingpp\\' => array($vendorDir . '/pingplusplus/pingpp-php/lib'),
     'Overtrue\\Pinyin\\' => array($vendorDir . '/overtrue/pinyin/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'MongoDB\\' => array($vendorDir . '/mongodb/mongodb/src'),

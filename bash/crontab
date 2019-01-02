@@ -1,0 +1,2 @@
+*/15 * * * * curl -X GET 'http://127.0.0.1/shop-srv-api/eatwhat.php?api=webLogic&mtd=checkOrderExpiredRegularTask'
+0 0 * * * * curl -X GET 'http://127.0.0.1/shop-srv-api/eatwhat.php?api=webLogic&mtd=processUserFinancingIncomeTask'
